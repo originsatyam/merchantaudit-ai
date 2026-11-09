@@ -1,0 +1,98 @@
+{
+  "id": "audit-d2c-001",
+  "merchantUrl": "https://auraglow-organics.com",
+  "domain": "auraglow-organics.com",
+  "auditTimestamp": "2026-11-09T06:30:00.000Z",
+  "overallScore": 94,
+  "status": "COMPLIANT",
+  "executiveSummary": "Merchant exhibits a high standard of compliance with Visa/Mastercard MCC rules. All four mandatory consumer disclosures (Terms, Privacy, Refund, and Contact) are present, legally detailed, and readily accessible. Active refund window of 30 days is explicitly stated with prepaid return label instructions. Business identity matches registered corporate entity with verifiable GSTIN/EIN in the footer. Recommended for direct payment activation.",
+  "businessIdentity": {
+    "legalEntityName": "AuraGlow Wellness Technologies Pvt Ltd",
+    "claimedName": "AuraGlow Organics",
+    "entityMatch": true,
+    "taxId": "29AAACA1234B1Z5",
+    "addressFound": true,
+    "physicalAddress": "Suite 402, Indiranagar 100ft Road, Bangalore, KA 560038, India",
+    "supportEmail": "support@auraglow-organics.com",
+    "supportPhone": "+91 (80) 4123-9988",
+    "evidenceSnippet": "Footer: © 2026 AuraGlow Wellness Technologies Pvt Ltd | CIN: U72900KA2022PTC158912 | Support: support@auraglow-organics.com"
+  },
+  "policies": {
+    "termsOfService": {
+      "id": "terms",
+      "name": "Terms of Service",
+      "required": true,
+      "found": true,
+      "url": "https://auraglow-organics.com/policies/terms-of-service",
+      "summary": "Clear dispute resolution clause under Karnataka jurisdiction. Outlines account creation, IP rights, and liability limits standard for consumer goods.",
+      "confidenceScore": 98,
+      "evidenceSnippet": "Section 14: Governing Law. These Terms of Service and any separate agreements shall be governed by and construed in accordance with the laws of India."
+    },
+    "privacyPolicy": {
+      "id": "privacy",
+      "name": "Privacy Policy",
+      "required": true,
+      "found": true,
+      "url": "https://auraglow-organics.com/policies/privacy-policy",
+      "summary": "Full DPDP Act 2023 & GDPR compliance outlined. Details cookie consent, third-party analytics disclosures, and data deletion request process.",
+      "confidenceScore": 96,
+      "evidenceSnippet": "Data Rights: You have the right to request access to or deletion of your personal data by contacting our Data Protection Officer at privacy@auraglow-organics.com."
+    },
+    "refundPolicy": {
+      "id": "refund",
+      "name": "Refund & Cancellation Policy",
+      "required": true,
+      "found": true,
+      "url": "https://auraglow-organics.com/policies/refund-policy",
+      "summary": "Compliant 30-day money-back guarantee. Clear stipulations on unused items and automated refund processing timeline of 5-7 business days.",
+      "confidenceScore": 95,
+      "evidenceSnippet": "Refunds are processed within 5-7 banking days back to the original method of payment once the return package is inspected at our warehouse facility."
+    },
+    "shippingOrDeliveryPolicy": {
+      "id": "shipping",
+      "name": "Shipping & Delivery Policy",
+      "required": true,
+      "found": true,
+      "url": "https://auraglow-organics.com/policies/shipping-policy",
+      "summary": "Standard dispatch within 24-48 hours. Estimated delivery 3-5 business days across domestic zones with tracking via BlueDart/Delhivery.",
+      "confidenceScore": 92,
+      "evidenceSnippet": "All orders are dispatched within 2 business days. Tracking numbers are transmitted via SMS and email immediately upon carrier handover."
+    },
+    "contactUs": {
+      "id": "contact",
+      "name": "Contact & Customer Support",
+      "required": true,
+      "found": true,
+      "url": "https://auraglow-organics.com/pages/contact-us",
+      "summary": "Physical business address, active direct telephone number, email, and Mon-Sat operating hours provided.",
+      "confidenceScore": 99,
+      "evidenceSnippet": "Hours: Monday - Friday, 9:00 AM - 6:00 PM IST. Phone: +91 80 4123 9988. Address: 402 Indiranagar 100ft Road, Bangalore."
+    }
+  },
+  "prohibitedRisk": [
+    {
+      "category": "Card Network Prohibited Goods",
+      "severity": "CLEAR",
+      "flaggedKeywords": [],
+      "explanation": "No restricted categories detected. Products are standard organic skincare and certified wellness cosmetics.",
+      "evidenceSnippet": "Product categories verified: Cleansers, Serums, Hydrating Creams. Ingredients listed comply with CDSCO cosmetics guidelines."
+    },
+    {
+      "category": "Misleading / Deceptive Claims",
+      "severity": "CLEAR",
+      "flaggedKeywords": [],
+      "explanation": "Standard marketing claims with appropriate disclaimers ('Results may vary based on skin type'). No miraculous medical cure claims.",
+      "evidenceSnippet": "Disclaimer: These cosmetic formulations are not intended to diagnose, treat, cure, or prevent any medical dermatitis disease."
+    }
+  ],
+  "crawledPages": [
+    { "title": "AuraGlow Organics - Pure Botanical Skincare", "url": "https://auraglow-organics.com", "status": 200 },
+    { "title": "Terms of Service - AuraGlow", "url": "https://auraglow-organics.com/policies/terms-of-service", "status": 200 },
+    { "title": "Privacy Policy - AuraGlow", "url": "https://auraglow-organics.com/policies/privacy-policy", "status": 200 },
+    { "title": "Refund & Returns Policy", "url": "https://auraglow-organics.com/policies/refund-policy", "status": 200 },
+    { "title": "Contact Us & Headquarters", "url": "https://auraglow-organics.com/pages/contact-us", "status": 200 }
+  ],
+  "humanDecision": {
+    "verdict": "PENDING"
+  }
+}

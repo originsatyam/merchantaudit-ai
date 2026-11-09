@@ -1,0 +1,95 @@
+{
+  "id": "audit-risk-002",
+  "merchantUrl": "https://ultra-ketomax-rapidburn.xyz",
+  "domain": "ultra-ketomax-rapidburn.xyz",
+  "auditTimestamp": "2026-11-09T06:31:00.000Z",
+  "overallScore": 28,
+  "status": "HIGH_RISK",
+  "executiveSummary": "HIGH RISK: Multiple critical compliance violations under Visa/Mastercard BRAM/GBPP rules. The domain promotes unregulated weight-loss capsules claiming 'Lose 15kg in 7 days without diet or exercise' (deceptive marketing). There is NO physical street address—only an untraceable PO Box in Seychelles. Refund policy explicitly states 'All sales are strictly final and non-refundable once the bottle seal is broken', conflicting with chargeback mitigation guidelines. Immediate auto-reject recommended.",
+  "businessIdentity": {
+    "legalEntityName": "Apex Global Ventures LLC",
+    "claimedName": "UltraKeto Labs",
+    "entityMatch": false,
+    "taxId": "UNVERIFIED",
+    "addressFound": false,
+    "physicalAddress": "PO Box 941, Victoria, Mahe, Seychelles (Virtual / Mailbox)",
+    "supportEmail": "admin@fast-temp-mail.org",
+    "supportPhone": "Not provided",
+    "evidenceSnippet": "Contact Page: We do not accept incoming phone calls. For order inquiries, submit the ticket form below. Registered in Seychelles."
+  },
+  "policies": {
+    "termsOfService": {
+      "id": "terms",
+      "name": "Terms of Service",
+      "required": true,
+      "found": true,
+      "url": "https://ultra-ketomax-rapidburn.xyz/terms",
+      "summary": "Onerous arbitration clause located offshore. Disclaims all liability for health complications resulting from product ingestion.",
+      "confidenceScore": 88,
+      "evidenceSnippet": "Limitation of Liability: You agree that under no circumstances shall Apex Global Ventures LLC be liable for any medical distress, cardiac symptoms, or hospitalization."
+    },
+    "privacyPolicy": {
+      "id": "privacy",
+      "name": "Privacy Policy",
+      "required": true,
+      "found": true,
+      "url": "https://ultra-ketomax-rapidburn.xyz/privacy",
+      "summary": "Generic boilerplate template with unreplaced placeholder tokens (e.g. '[INSERT YOUR COMPANY NAME HERE]').",
+      "confidenceScore": 95,
+      "evidenceSnippet": "This privacy policy explains how [INSERT COMPANY NAME] collects and uses personal information from visitors of [INSERT WEBSITE URL]."
+    },
+    "refundPolicy": {
+      "id": "refund",
+      "name": "Refund & Cancellation Policy",
+      "required": true,
+      "found": true,
+      "url": "https://ultra-ketomax-rapidburn.xyz/refund",
+      "summary": "Deceptive refund policy. Claims a 60-day guarantee in hero banners, but the legal policy specifies only un-opened bottles with a $35 restocking fee.",
+      "confidenceScore": 99,
+      "evidenceSnippet": "Hero Banner: '100% Risk-Free 60-Day Money-Back Guarantee'. Legal Policy Section 3: 'Due to safety standards, opened bottles are non-refundable. Returns incur a mandatory $35 processing charge per bottle.'"
+    },
+    "shippingOrDeliveryPolicy": {
+      "id": "shipping",
+      "name": "Shipping & Delivery Policy",
+      "required": true,
+      "found": false,
+      "summary": "No dedicated shipping policy page found. Checkout shows vague 'Priority Courier 2-30 days'.",
+      "confidenceScore": 92,
+      "evidenceSnippet": "Checkout text: Estimated delivery window 2-30 business days depending on customs clearance."
+    },
+    "contactUs": {
+      "id": "contact",
+      "name": "Contact & Customer Support",
+      "required": true,
+      "found": false,
+      "summary": "Failed contactability check. No telephone number, no physical office address, disposable email domain.",
+      "confidenceScore": 98,
+      "evidenceSnippet": "No telephone number listed. Email listed: admin@fast-temp-mail.org."
+    }
+  },
+  "prohibitedRisk": [
+    {
+      "category": "Unapproved Pharmaceuticals & Miracle Health Claims",
+      "severity": "CRITICAL",
+      "flaggedKeywords": ["instant fat burn", "lose 15kg in 7 days", "cure metabolic disease", "no diet needed"],
+      "explanation": "Violates FDA / CDSCO dietary supplement guidelines. High probability of card network brand damage (GBPP/BRAM violation).",
+      "evidenceSnippet": "Headline: 'The Secret Keto Miracle That Doctors Don't Want You to Know — Burn 15kg of Belly Fat in 7 Days Guaranteed without exercise.'"
+    },
+    {
+      "category": "Deceptive Subscription / Hidden Billing",
+      "severity": "CRITICAL",
+      "flaggedKeywords": ["trial bottle", "auto-rebill", "recurring VIP club"],
+      "explanation": "Negative option billing detected. Fine print reveals a $89.95 monthly auto-ship subscription triggered 14 days after initial $4.95 trial.",
+      "evidenceSnippet": "Section 8.2: 'By ordering the $4.95 sample, you enroll in our Monthly VIP Wellness Club billed automatically at $89.95 every 30 days until cancelled.'"
+    }
+  ],
+  "crawledPages": [
+    { "title": "UltraKeto Max - Rapid Weight Loss Miracle", "url": "https://ultra-ketomax-rapidburn.xyz", "status": 200 },
+    { "title": "Terms of Use", "url": "https://ultra-ketomax-rapidburn.xyz/terms", "status": 200 },
+    { "title": "Privacy Policy Template", "url": "https://ultra-ketomax-rapidburn.xyz/privacy", "status": 200 },
+    { "title": "Returns & Refund Policy", "url": "https://ultra-ketomax-rapidburn.xyz/refund", "status": 200 }
+  ],
+  "humanDecision": {
+    "verdict": "PENDING"
+  }
+}

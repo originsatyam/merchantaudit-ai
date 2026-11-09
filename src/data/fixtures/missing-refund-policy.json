@@ -1,0 +1,90 @@
+{
+  "id": "audit-review-003",
+  "merchantUrl": "https://devsync-analytics.io",
+  "domain": "devsync-analytics.io",
+  "auditTimestamp": "2026-11-09T06:32:00.000Z",
+  "overallScore": 68,
+  "status": "NEEDS_REVIEW",
+  "executiveSummary": "CONDITIONAL / NEEDS REVIEW: Legitimate B2B developer tool SaaS with verified company registration, active GitHub integration, and clean security disclosures. However, merchant lacks an explicit Refund & Cancellation Policy page. B2B annual subscription terms do not mention pro-rata cancellation rights or trial chargeback guidelines. Recommended action: Request merchant to publish an explicit Refund & Cancellation SLA before full payment activation.",
+  "businessIdentity": {
+    "legalEntityName": "DevSync Systems Inc.",
+    "claimedName": "DevSync Analytics",
+    "entityMatch": true,
+    "taxId": "DE-5899201",
+    "addressFound": true,
+    "physicalAddress": "100 Montgomery St, Suite 1400, San Francisco, CA 94104, USA",
+    "supportEmail": "billing@devsync-analytics.io",
+    "supportPhone": "+1 (415) 882-9011",
+    "evidenceSnippet": "Footer: © 2026 DevSync Systems Inc. (Delaware Corp #5899201). Registered office: 100 Montgomery St, SF, CA."
+  },
+  "policies": {
+    "termsOfService": {
+      "id": "terms",
+      "name": "Terms of Service",
+      "required": true,
+      "found": true,
+      "url": "https://devsync-analytics.io/legal/terms",
+      "summary": "Standard enterprise SaaS Master Services Agreement. Covers uptime SLA (99.9%), API rate limits, and data ownership.",
+      "confidenceScore": 96,
+      "evidenceSnippet": "Section 9: Intellectual Property & Data Ownership. Customer retains full ownership of all telemetry events transmitted to DevSync APIs."
+    },
+    "privacyPolicy": {
+      "id": "privacy",
+      "name": "Privacy Policy",
+      "required": true,
+      "found": true,
+      "url": "https://devsync-analytics.io/legal/privacy",
+      "summary": "SOC2 Type II certified data processing addendum. Robust GDPR and CCPA disclosures.",
+      "confidenceScore": 98,
+      "evidenceSnippet": "Security: DevSync is SOC2 Type II and ISO 27001 certified. All telemetry data is encrypted at rest using AES-256."
+    },
+    "refundPolicy": {
+      "id": "refund",
+      "name": "Refund & Cancellation Policy",
+      "required": true,
+      "found": false,
+      "summary": "NO dedicated refund policy found. Terms of Service briefly state 'All fees paid for Enterprise plans are non-refundable unless specified in an Order Form'.",
+      "confidenceScore": 89,
+      "evidenceSnippet": "Section 4.3: Fees are non-refundable except as otherwise expressly stated in the Order Form executed between Customer and DevSync.",
+      "recommendation": "Require merchant to add a public self-serve cancellation policy page explaining monthly recurring billing cancellation steps."
+    },
+    "shippingOrDeliveryPolicy": {
+      "id": "shipping",
+      "name": "Shipping & Delivery Policy",
+      "required": false,
+      "found": true,
+      "url": "https://devsync-analytics.io/pricing",
+      "summary": "Instant electronic license provisioning upon checkout via webhook activation.",
+      "confidenceScore": 95,
+      "evidenceSnippet": "Access: Cloud workspaces are automatically provisioned within 60 seconds of credit card authentication."
+    },
+    "contactUs": {
+      "id": "contact",
+      "name": "Contact & Customer Support",
+      "required": true,
+      "found": true,
+      "url": "https://devsync-analytics.io/contact",
+      "summary": "Valid technical support portal, billing email, enterprise sales phone line, and physical HQ provided.",
+      "confidenceScore": 95,
+      "evidenceSnippet": "Enterprise Inquiries: sales@devsync-analytics.io | Billing: billing@devsync-analytics.io | Phone: +1 415 882 9011."
+    }
+  },
+  "prohibitedRisk": [
+    {
+      "category": "Prohibited Software / Card Network Guidelines",
+      "severity": "CLEAR",
+      "flaggedKeywords": [],
+      "explanation": "B2B DevOps developer tooling. No prohibited software, malware, or scraping exploits detected.",
+      "evidenceSnippet": "Core product: Real-time Kubernetes log aggregator and application performance metrics."
+    }
+  ],
+  "crawledPages": [
+    { "title": "DevSync - Unified Telemetry for Modern Cloud Teams", "url": "https://devsync-analytics.io", "status": 200 },
+    { "title": "Terms of Service - DevSync", "url": "https://devsync-analytics.io/legal/terms", "status": 200 },
+    { "title": "Privacy & Trust Center", "url": "https://devsync-analytics.io/legal/privacy", "status": 200 },
+    { "title": "Contact & Enterprise Sales", "url": "https://devsync-analytics.io/contact", "status": 200 }
+  ],
+  "humanDecision": {
+    "verdict": "PENDING"
+  }
+}
