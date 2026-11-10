@@ -1,32 +1,283 @@
-﻿@tailwind base;
+@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ==========================================================================
+   REMITLENS DESIGN SYSTEM TOKENS (Next.js Edition)
+   Strictly aligned with RemitLens PRD v0.1, Linear, Supabase, and Apple UX
+   ========================================================================== */
+
 :root {
-  --background: #09090b;
-  --foreground: #fafafa;
+  /* Dark mode default (Linear / Obsidian Terminal) */
+  --bg: #090a0c;
+  --bg-subtle: #0f1013;
+  --surface: #14161a;
+  --surface-hover: #1a1c22;
+  --surface-active: #22252d;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-focus: rgba(255, 255, 255, 0.22);
+  --border-subtle: rgba(255, 255, 255, 0.04);
+
+  /* Typography */
+  --text-primary: #f2f3f5;
+  --text-secondary: #90939e;
+  --text-tertiary: #5d606c;
+  --text-on-accent: #ffffff;
+
+  /* Brand Accent */
+  --accent: #5e6ad2;
+  --accent-hover: #6d79e6;
+  --accent-subtle: rgba(94, 106, 210, 0.12);
+  --accent-border: rgba(94, 106, 210, 0.3);
+
+  /* Status Colors */
+  --status-confirmed-text: #34d399;
+  --status-confirmed-bg: rgba(52, 211, 153, 0.09);
+  --status-confirmed-border: rgba(52, 211, 153, 0.24);
+
+  --status-suggested-text: #818cf8;
+  --status-suggested-bg: rgba(129, 140, 248, 0.09);
+  --status-suggested-border: rgba(129, 140, 248, 0.35);
+
+  --status-partial-text: #2dd4bf;
+  --status-partial-bg: rgba(45, 212, 191, 0.09);
+  --status-partial-border: rgba(45, 212, 191, 0.25);
+
+  --status-review-text: #fbbf24;
+  --status-review-bg: rgba(251, 191, 36, 0.09);
+  --status-review-border: rgba(251, 191, 36, 0.25);
+
+  --status-duplicate-text: #c084fc;
+  --status-duplicate-bg: rgba(192, 132, 252, 0.09);
+  --status-duplicate-border: rgba(192, 132, 252, 0.25);
+
+  --status-unmatched-text: #9ca3af;
+  --status-unmatched-bg: rgba(156, 163, 175, 0.07);
+  --status-unmatched-border: rgba(156, 163, 175, 0.18);
+
+  --status-documented-text: #38bdf8;
+  --status-documented-bg: rgba(56, 189, 248, 0.09);
+  --status-documented-border: rgba(56, 189, 248, 0.25);
+
+  --status-unexplained-text: #fb7185;
+  --status-unexplained-bg: rgba(251, 113, 133, 0.09);
+  --status-unexplained-border: rgba(251, 113, 133, 0.25);
+
+  /* Geometry */
+  --radius-xs: 5px;
+  --radius-sm: 7px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-pill: 9999px;
+
+  /* Fonts */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 16px -2px rgba(0, 0, 0, 0.5), 0 2px 6px -1px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 16px 36px -4px rgba(0, 0, 0, 0.6), 0 4px 12px -2px rgba(0, 0, 0, 0.4);
+
+  /* Motion */
+  --ease-apple: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.15);
+  --dur-fast: 120ms;
+  --dur-base: 220ms;
+}
+
+[data-theme="light"] {
+  --bg: #fbfbfd;
+  --bg-subtle: #f5f5f7;
+  --surface: #ffffff;
+  --surface-hover: #f8f8fa;
+  --surface-active: #ececf0;
+  --border: rgba(0, 0, 0, 0.07);
+  --border-focus: rgba(0, 0, 0, 0.22);
+  --border-subtle: rgba(0, 0, 0, 0.03);
+
+  --text-primary: #111215;
+  --text-secondary: #636672;
+  --text-tertiary: #9295a2;
+  --text-on-accent: #ffffff;
+
+  --accent: #4f52e2;
+  --accent-hover: #4346cc;
+  --accent-subtle: rgba(79, 82, 226, 0.08);
+  --accent-border: rgba(79, 82, 226, 0.25);
+
+  --status-confirmed-text: #059669;
+  --status-confirmed-bg: rgba(5, 150, 105, 0.08);
+  --status-confirmed-border: rgba(5, 150, 105, 0.25);
+
+  --status-suggested-text: #4f46e5;
+  --status-suggested-bg: rgba(79, 70, 229, 0.08);
+  --status-suggested-border: rgba(79, 70, 229, 0.3);
+
+  --status-partial-text: #0d9488;
+  --status-partial-bg: rgba(13, 148, 136, 0.08);
+  --status-partial-border: rgba(13, 148, 136, 0.25);
+
+  --status-review-text: #d97706;
+  --status-review-bg: rgba(217, 119, 6, 0.08);
+  --status-review-border: rgba(217, 119, 6, 0.25);
+
+  --status-duplicate-text: #7c3aed;
+  --status-duplicate-bg: rgba(124, 58, 237, 0.08);
+  --status-duplicate-border: rgba(124, 58, 237, 0.25);
+
+  --status-unmatched-text: #4b5563;
+  --status-unmatched-bg: rgba(75, 85, 99, 0.06);
+  --status-unmatched-border: rgba(75, 85, 99, 0.2);
+
+  --status-documented-text: #0284c7;
+  --status-documented-bg: rgba(2, 132, 199, 0.08);
+  --status-documented-border: rgba(2, 132, 199, 0.25);
+
+  --status-unexplained-text: #e11d48;
+  --status-unexplained-bg: rgba(225, 29, 72, 0.08);
+  --status-unexplained-border: rgba(225, 29, 72, 0.25);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 16px -2px rgba(0, 0, 0, 0.06), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 16px 36px -4px rgba(0, 0, 0, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.04);
 }
 
 body {
-  background-color: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  letter-spacing: -0.012em;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
 }
 
-@media print {
-  body {
-    background-color: #ffffff !important;
-    color: #000000 !important;
-  }
-  header, form, button, .sticky {
-    display: none !important;
-  }
-  .bg-zinc-950, .bg-zinc-900, .bg-zinc-900\/50, .bg-zinc-950\/60, .bg-zinc-950\/40 {
-    background-color: #ffffff !important;
-    color: #000000 !important;
-    border-color: #e4e4e7 !important;
-  }
-  .text-zinc-100, .text-zinc-200, .text-zinc-300, .text-zinc-400 {
-    color: #18181b !important;
-  }
+/* Tabular Money Numerals */
+.amt {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+.amt .cur {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-right: 4px;
+  font-weight: 500;
+}
+.amt.pos { color: var(--status-confirmed-text); font-weight: 600; }
+.amt.neg { color: var(--status-unexplained-text); font-weight: 600; }
+
+/* Provenance Chip */
+.src-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  transition: all var(--dur-fast) var(--ease-apple);
+}
+.src-chip:hover {
+  color: var(--text-primary);
+  border-color: var(--border-focus);
+  transform: translateY(-1px);
+}
+
+/* Lucide Status Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  white-space: nowrap;
+  transition: all var(--dur-fast) var(--ease-apple);
+}
+.badge svg { width: 13px; height: 13px; flex-shrink: 0; }
+.badge.confirmed { background: var(--status-confirmed-bg); color: var(--status-confirmed-text); border: 1px solid var(--status-confirmed-border); }
+.badge.suggested { background: var(--status-suggested-bg); color: var(--status-suggested-text); border: 1px dashed var(--status-suggested-border); }
+.badge.partial { background: var(--status-partial-bg); color: var(--status-partial-text); border: 1px dashed var(--status-partial-border); }
+.badge.review { background: var(--status-review-bg); color: var(--status-review-text); border: 1px solid var(--status-review-border); }
+.badge.duplicate { background: var(--status-duplicate-bg); color: var(--status-duplicate-text); border: 1px solid var(--status-duplicate-border); }
+.badge.unmatched { background: var(--status-unmatched-bg); color: var(--status-unmatched-text); border: 1px solid var(--status-unmatched-border); }
+.badge.documented { background: var(--status-documented-bg); color: var(--status-documented-text); border: 1px solid var(--status-documented-border); }
+.badge.unexplained { background: var(--status-unexplained-bg); color: var(--status-unexplained-text); border: 1px solid var(--status-unexplained-border); }
+
+/* Apple Spring Buttons */
+.btn {
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 12px;
+  height: 30px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-primary);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--dur-fast) var(--ease-apple);
+}
+.btn:hover {
+  background: var(--surface-hover);
+  border-color: var(--border-focus);
+  transform: translateY(-1px);
+}
+.btn:active {
+  transform: scale(0.96) translateY(0);
+}
+.btn-primary {
+  background: var(--text-primary);
+  color: var(--bg);
+  border-color: var(--text-primary);
+  font-weight: 600;
+}
+.btn-primary:hover {
+  background: #ffffff;
+  border-color: #ffffff;
+  color: #000;
+  box-shadow: 0 0 16px rgba(255, 255, 255, 0.18);
+}
+[data-theme="light"] .btn-primary:hover {
+  background: #000000;
+  border-color: #000000;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+}
+.btn-ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--text-secondary);
+}
+.btn-ghost:hover {
+  background: var(--surface-hover);
+  border-color: transparent;
+  color: var(--text-primary);
+}
+.btn-danger {
+  background: var(--status-unexplained-bg);
+  color: var(--status-unexplained-text);
+  border-color: var(--status-unexplained-border);
+}
+.btn-danger:hover {
+  background: rgba(251, 113, 133, 0.16);
+}
+.btn-sm {
+  height: 26px;
+  padding: 0 9px;
+  font-size: 11.5px;
 }

@@ -1,505 +1,351 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Navbar } from '@/components/Navbar';
-import { ScorecardBadge } from '@/components/ScorecardBadge';
-import { PolicyList } from '@/components/PolicyList';
-import { BusinessIdentityCard } from '@/components/BusinessIdentityCard';
-import { ProhibitedRiskCard } from '@/components/ProhibitedRiskCard';
-import { HumanDecisionBar } from '@/components/HumanDecisionBar';
-import { AuditResult, HumanAuditSignoff } from '@/lib/types';
-import { loadReviewPack, saveReviewPack, clearReviewPack, ReviewHistoryEntry } from '@/lib/storage';
+import { Navbar } from '../components/Navbar';
+import { ReconciliationChainView } from '../components/ReconciliationChainView';
+import { LedgerTable } from '../components/LedgerTable';
+import { ImportModal } from '../components/ImportModal';
+import { ExportModal } from '../components/ExportModal';
+import { AuditLogModal } from '../components/AuditLogModal';
+import { Toast } from '../components/Toast';
+import {
+  createInitialWorkspace,
+  confirmChainMatch,
+  unlinkChainMatch,
+  flagInquiry,
+  undoLastAction,
+  WorkspaceState,
+} from '../lib/reconciliation-store';
+import { runMatchingEngine } from '../lib/matching-engine';
+import { formatMoney } from '../lib/money';
+import {
+  ShieldAlert,
+  Sparkles,
+  UploadCloud,
+  FileSpreadsheet,
+  Download,
+  AlertCircle,
+  HelpCircle,
+  Receipt,
+  BookOpen,
+  ArrowRight
+} from 'lucide-react';
+import { InvoiceRecord, SettlementRecord, BankCreditRecord } from '../lib/types';
 
-import validD2C from '@/data/fixtures/valid-d2c-store.json';
-import highRiskPharma from '@/data/fixtures/high-risk-pharma.json';
-import missingRefund from '@/data/fixtures/missing-refund-policy.json';
+export default function RemitLensApp() {
+  const [workspace, setWorkspace] = useState<WorkspaceState | null>(null);
+  const [currentView, setCurrentView] = useState<'workspace' | 'import' | 'audit' | 'readme'>('workspace');
+  const [isDarkMode, setIsDarkMode] = useState(true);
 
-import { Search, Loader2, Sparkles, Shield, AlertTriangle, FileCode2, Layers, CheckCircle2, UserCheck, ShieldCheck, History } from 'lucide-react';
+  // Modals & Overlays
+  const [isImportOpen, setIsImportOpen] = useState(false);
+  const [isExportOpen, setIsExportOpen] = useState(false);
+  const [isAuditOpen, setIsAuditOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState<{ text: string; action?: string; onAction?: () => void } | null>(null);
 
-export default function HomePage() {
-  const [inputUrl, setInputUrl] = useState('https://auraglow-organics.com');
-  const [isLoading, setIsLoading] = useState(false);
-  const [loadingStep, setLoadingStep] = useState('');
-  const [auditData, setAuditData] = useState<AuditResult>(validD2C as unknown as AuditResult);
-  const [activeTab, setActiveTab] = useState<'scorecard' | 'identity' | 'prohibited' | 'pages'>('scorecard');
-  const [mockMode, setMockMode] = useState(true);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [decisionHistory, setDecisionHistory] = useState<ReviewHistoryEntry[]>([]);
-  const [restoredNotice, setRestoredNotice] = useState<string | null>(null);
-
-  // Restore saved analyst review pack across page refreshes or domain switches
+  // Initialize workspace on client mount
   useEffect(() => {
-    if (!auditData?.domain) return;
-    const saved = loadReviewPack(auditData.domain);
-    if (saved) {
-      setDecisionHistory(saved.history || []);
-      if (saved.decision && saved.decision.verdict !== 'PENDING') {
-        setRestoredNotice(`Restored prior review by ${saved.decision.reviewerName || 'analyst'} (${saved.decision.verdict})`);
-        setAuditData(prev => {
-          const updated = { ...prev, humanDecision: saved.decision };
-          if (saved.policyOverrides) {
-            const updatedPolicies = { ...updated.policies };
-            for (const [policyId, override] of Object.entries(saved.policyOverrides)) {
-              for (const key of Object.keys(updatedPolicies) as (keyof typeof updatedPolicies)[]) {
-                if (updatedPolicies[key]?.id === policyId) {
-                  updatedPolicies[key] = {
-                    ...updatedPolicies[key],
-                    humanOverride: {
-                      verified: override.verified,
-                      reviewerNote: override.note,
-                      verifiedAt: override.verifiedAt,
-                    }
-                  };
-                }
-              }
-            }
-            updated.policies = updatedPolicies;
-          }
-          return updated;
-        });
-      } else {
-        setRestoredNotice(null);
-      }
-    } else {
-      setDecisionHistory([]);
-      setRestoredNotice(null);
-    }
-  }, [auditData.domain]);
+    const initial = createInitialWorkspace();
+    setWorkspace(initial);
 
-  const handleSelectSample = (type: 'valid' | 'pharma' | 'missing') => {
-    setErrorMsg(null);
-    if (type === 'valid') {
-      setInputUrl('https://auraglow-organics.com');
-      setAuditData(validD2C as unknown as AuditResult);
-    } else if (type === 'pharma') {
-      setInputUrl('https://ultra-ketomax-rapidburn.xyz');
-      setAuditData(highRiskPharma as unknown as AuditResult);
-    } else {
-      setInputUrl('https://devsync-analytics.io');
-      setAuditData(missingRefund as unknown as AuditResult);
-    }
+    // Apply dark theme by default
+    document.documentElement.setAttribute('data-theme', 'dark');
+  }, []);
+
+  const toggleTheme = () => {
+    const nextDark = !isDarkMode;
+    setIsDarkMode(nextDark);
+    document.documentElement.setAttribute('data-theme', nextDark ? 'dark' : 'light');
   };
 
-  const handleRunAudit = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    if (!inputUrl.trim()) return;
+  if (!workspace) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg)' }}>
+        <div style={{ color: 'var(--text-secondary)', fontSize: '13px' }}>Loading RemitLens Financial Engine...</div>
+      </div>
+    );
+  }
 
-    setErrorMsg(null);
-    setIsLoading(true);
-
-    try {
-      if (mockMode) {
-        setLoadingStep('Loading demo fixture data...');
-        await new Promise((r) => setTimeout(r, 200));
-
-        const lower = inputUrl.toLowerCase();
-        if (lower.includes('keto') || lower.includes('pharma') || lower.includes('burn')) {
-          setAuditData(highRiskPharma as unknown as AuditResult);
-        } else if (lower.includes('devsync') || lower.includes('saas') || lower.includes('missing')) {
-          setAuditData(missingRefund as unknown as AuditResult);
-        } else {
-          setAuditData(validD2C as unknown as AuditResult);
-        }
-      } else {
-        setLoadingStep('Inspecting public merchant website...');
-        const response = await fetch('/api/audit', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url: inputUrl }),
-        });
-
-        if (!response.ok) {
-          const err = await response.json();
-          throw new Error(err.error || 'Failed to complete evidence inspection');
-        }
-
-        const data = await response.json();
-        setAuditData(data);
-      }
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Inspection failed to complete.';
-      setErrorMsg(msg);
-    } finally {
-      setIsLoading(false);
-      setLoadingStep('');
-    }
-  };
-
-  const handleHumanDecision = (signoff: HumanAuditSignoff) => {
-    setAuditData((prev) => {
-      const updated = {
-        ...prev,
-        humanDecision: signoff,
-      };
-
-      const overrides: Record<string, { verified: boolean; note?: string; verifiedAt?: string }> = {};
-      for (const p of Object.values(updated.policies)) {
-        if (p?.humanOverride) {
-          overrides[p.id] = {
-            verified: p.humanOverride.verified,
-            note: p.humanOverride.reviewerNote,
-            verifiedAt: p.humanOverride.verifiedAt,
-          };
-        }
-      }
-
-      const saved = saveReviewPack({
-        domain: updated.domain,
-        merchantUrl: updated.merchantUrl,
-        decision: signoff,
-        policyOverrides: overrides,
-      });
-
-      setDecisionHistory(saved.history || []);
-      setRestoredNotice(`Review decision saved locally for ${updated.domain}`);
-      return updated;
+  // Handlers
+  const handleConfirmMatch = (chainId: string) => {
+    const updated = confirmChainMatch(workspace, chainId);
+    setWorkspace(updated);
+    setToastMessage({
+      text: 'Match confirmed and logged to audit trail.',
+      action: 'Undo',
+      onAction: () => handleUndo(),
     });
   };
 
-  const handlePolicyOverride = (policyId: string, verified: boolean, note: string) => {
-    setAuditData((prev) => {
-      const updatedPolicies = { ...prev.policies };
-      for (const key of Object.keys(updatedPolicies) as (keyof typeof updatedPolicies)[]) {
-        if (updatedPolicies[key]?.id === policyId) {
-          updatedPolicies[key] = {
-            ...updatedPolicies[key],
-            humanOverride: {
-              verified,
-              reviewerNote: note,
-              verifiedAt: new Date().toISOString(),
-            },
-          };
-        }
-      }
-
-      const overrides: Record<string, { verified: boolean; note?: string; verifiedAt?: string }> = {};
-      for (const p of Object.values(updatedPolicies)) {
-        if (p?.humanOverride) {
-          overrides[p.id] = {
-            verified: p.humanOverride.verified,
-            note: p.humanOverride.reviewerNote,
-            verifiedAt: p.humanOverride.verifiedAt,
-          };
-        }
-      }
-
-      saveReviewPack({
-        domain: prev.domain,
-        merchantUrl: prev.merchantUrl,
-        decision: prev.humanDecision,
-        policyOverrides: overrides,
-      });
-
-      return { ...prev, policies: updatedPolicies };
+  const handleUnlinkMatch = (chainId: string) => {
+    const updated = unlinkChainMatch(workspace, chainId);
+    setWorkspace(updated);
+    setToastMessage({
+      text: 'Match unlinked. Records returned to Review Queue.',
+      action: 'Undo',
+      onAction: () => handleUndo(),
     });
   };
 
-  const handleClearReview = () => {
-    clearReviewPack(auditData.domain);
-    setAuditData((prev) => {
-      const resetPolicies = { ...prev.policies };
-      for (const key of Object.keys(resetPolicies) as (keyof typeof resetPolicies)[]) {
-        if (resetPolicies[key]?.humanOverride) {
-          delete resetPolicies[key].humanOverride;
-        }
-      }
-      return {
-        ...prev,
-        humanDecision: { verdict: 'PENDING' },
-        policies: resetPolicies,
-      };
+  const handleFlagInquiry = (chainId: string) => {
+    const updated = flagInquiry(workspace, chainId);
+    setWorkspace(updated);
+    setToastMessage({
+      text: 'Unexplained difference flagged for remitting bank inquiry.',
     });
-    setDecisionHistory([]);
-    setRestoredNotice(null);
   };
+
+  const handleUndo = () => {
+    if (!workspace.lastUndoableAction) return;
+    const updated = undoLastAction(workspace);
+    setWorkspace(updated);
+    setToastMessage({
+      text: 'Action reversed. Match state restored.',
+    });
+  };
+
+  const handleImportNewData = (
+    invoices: InvoiceRecord[],
+    settlements: SettlementRecord[],
+    bankCredits: BankCreditRecord[]
+  ) => {
+    const result = runMatchingEngine({ invoices, settlements, bankCredits });
+    setWorkspace({
+      ...workspace,
+      chains: result.chains,
+      selectedChainId: result.chains[0]?.id || null,
+      auditLogs: [
+        {
+          id: `log_import_${Date.now()}`,
+          timestamp: new Date().toISOString(),
+          operatorEmail: workspace.activeOperator,
+          action: 'IMPORT_FILE',
+          details: `Imported ${invoices.length} invoices, ${settlements.length} settlement payouts, and ${bankCredits.length} bank statement credits.`,
+          undoable: false,
+        },
+        ...workspace.auditLogs,
+      ],
+    });
+    setToastMessage({
+      text: `Successfully matched ${result.chains.length} reconciliation chains across datasets.`,
+    });
+  };
+
+  // Metrics calculation
+  const totalCreditedINR = workspace.chains.reduce((acc, c) => acc + (c.bankCredit?.creditAmountINR.minorUnits || 0), 0);
+  const totalUnexplainedINR = workspace.chains.reduce((acc, c) => acc + Math.abs(c.unexplainedDifferenceINR?.minorUnits || 0), 0);
+  const totalDocumentedFees = workspace.chains.reduce((acc, c) => acc + c.documentedDifferences.length, 0);
+  const confirmedChains = workspace.chains.filter(c => c.status === 'confirmed');
+
+  const selectedChain = workspace.chains.find(c => c.id === workspace.selectedChainId) || workspace.chains[0];
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col transition-colors duration-200">
-      {/* Navigation */}
-      <Navbar onSelectSample={handleSelectSample} mockMode={mockMode} setMockMode={setMockMode} />
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      {/* Top Glassmorphic Navigation */}
+      <Navbar
+        currentView={currentView}
+        onViewChange={v => {
+          if (v === 'import') setIsImportOpen(true);
+          else if (v === 'audit') setIsAuditOpen(true);
+          else setCurrentView(v);
+        }}
+        onOpenExport={() => setIsExportOpen(true)}
+        isDarkMode={isDarkMode}
+        onToggleTheme={toggleTheme}
+        confirmedCount={confirmedChains.length}
+        totalChains={workspace.chains.length}
+      />
 
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        {/* Header & Search Bar */}
-        <section className="space-y-4">
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800/50 mb-2">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-              Merchant Onboarding Evidence • Human Analyst Supervised
-            </div>
-            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100">
-              Merchant Evidence Copilot
-            </h1>
-            <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 mt-2 leading-relaxed">
-              Human-reviewed website evidence and risk-review assistant for merchant onboarding teams. Inspect public merchant disclosures, identify observable gaps, and document decisions faster.
-            </p>
+      {/* Main Content Body */}
+      <main style={{ flex: 1, padding: '24px', maxWidth: '1180px', width: '100%', margin: '0 auto' }}>
+
+        {/* PRD §18 Synthetic Demo Data Notice */}
+        <div
+          style={{
+            background: 'var(--status-review-bg)',
+            border: '1px solid var(--status-review-border)',
+            color: 'var(--status-review-text)',
+            padding: '8px 14px',
+            fontSize: '12px',
+            borderRadius: 'var(--radius-sm)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: '20px',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <ShieldAlert size={14} />
+            <span>
+              <strong>Demo Environment:</strong> All counterparty names, invoices, and bank references are synthetic demo data.
+            </span>
           </div>
+          <button
+            className="btn btn-sm"
+            style={{ height: '24px', padding: '0 8px', fontSize: '11px', background: 'transparent', borderColor: 'currentColor', color: 'inherit' }}
+            onClick={() => setIsImportOpen(true)}
+          >
+            Switch / Import Datasets
+          </button>
+        </div>
 
-          {mockMode && (
-            <div className="p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 rounded-xl text-amber-800 dark:text-amber-300 text-xs flex items-center justify-between gap-3 shadow-xs">
-              <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-amber-600 shrink-0" />
-                <span>
-                  <strong className="font-semibold">DEMO MODE ACTIVE:</strong> Viewing pre-calculated demo fixtures (zero API tokens burned). Switch to &quot;Live Crawl&quot; in the top bar to inspect live websites.
-                </span>
+        {/* VIEW: WORKSPACE */}
+        {currentView === 'workspace' && (
+          <div>
+            {/* Quick Metrics KPI Bar */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px', marginBottom: '24px' }}>
+              <div className="card" style={{ padding: '16px' }}>
+                <div style={{ fontSize: '11px', color: 'var(--text-tertiary)', textTransform: 'uppercase', fontWeight: 600, marginBottom: '4px' }}>
+                  Total Inward Credited (INR)
+                </div>
+                <div className="amt pos" style={{ fontSize: '20px', fontWeight: 600 }}>
+                  {formatMoney(totalCreditedINR, 'INR')}
+                </div>
+                <div style={{ fontSize: '11.5px', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                  Across {workspace.chains.length} transactions
+                </div>
               </div>
-            </div>
-          )}
 
-          {/* Audit URL Input Form */}
-          <form onSubmit={handleRunAudit} className="flex flex-col sm:flex-row gap-3 pt-2">
-            <div className="relative flex-1">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-zinc-400">
-                <Search className="w-5 h-5" />
+              <div className="card" style={{ padding: '16px' }}>
+                <div style={{ fontSize: '11px', color: 'var(--text-tertiary)', textTransform: 'uppercase', fontWeight: 600, marginBottom: '4px' }}>
+                  Documented Provider Fees
+                </div>
+                <div style={{ fontSize: '20px', fontWeight: 600, color: 'var(--status-documented-text)' }}>
+                  {totalDocumentedFees} Deductions
+                </div>
+                <div style={{ fontSize: '11.5px', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                  Itemized in Stripe & Wise files
+                </div>
               </div>
-              <input
-                type="text"
-                value={inputUrl}
-                onChange={(e) => setInputUrl(e.target.value)}
-                placeholder="Enter merchant store URL (e.g., https://example-store.com)"
-                className="w-full pl-11 pr-4 py-3.5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 text-sm font-mono transition shadow-xs"
-                disabled={isLoading}
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={isLoading || !inputUrl.trim()}
-              className="px-6 py-3.5 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 disabled:opacity-50 text-white font-bold text-sm rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 shrink-0"
-            >
-              {isLoading ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Inspecting...</span>
-                </>
-              ) : (
-                <>
-                  <Sparkles className="w-4 h-4" />
-                  <span>{mockMode ? 'Load Demo Fixture' : 'Inspect Merchant Website'}</span>
-                </>
-              )}
-            </button>
-          </form>
 
-          {/* Quick Preset Buttons on Mobile */}
-          <div className="flex lg:hidden flex-wrap items-center gap-2 text-xs">
-            <span className="text-zinc-500">Presets:</span>
-            <button
-              onClick={() => handleSelectSample('valid')}
-              className="px-2.5 py-1 rounded bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 font-medium shadow-xs"
-            >
-              Compliant D2C
-            </button>
-            <button
-              onClick={() => handleSelectSample('missing')}
-              className="px-2.5 py-1 rounded bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 font-medium shadow-xs"
-            >
-              Needs Review SaaS
-            </button>
-            <button
-              onClick={() => handleSelectSample('pharma')}
-              className="px-2.5 py-1 rounded bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 font-medium shadow-xs"
-            >
-              High Risk Pharma
-            </button>
-          </div>
+              <div className="card" style={{ padding: '16px', borderLeft: totalUnexplainedINR > 0 ? '2px solid var(--status-unexplained-text)' : '1px solid var(--border)' }}>
+                <div style={{ fontSize: '11px', color: 'var(--text-tertiary)', textTransform: 'uppercase', fontWeight: 600, marginBottom: '4px' }}>
+                  Unexplained Differences
+                </div>
+                <div className="amt neg" style={{ fontSize: '20px', fontWeight: 600 }}>
+                  {formatMoney(-totalUnexplainedINR, 'INR')}
+                </div>
+                <div style={{ fontSize: '11.5px', color: 'var(--status-unexplained-text)', marginTop: '4px' }}>
+                  Requires bank inquiry (Never guessed)
+                </div>
+              </div>
 
-          {/* Loading Progress State */}
-          {isLoading && (
-            <div className="p-4 bg-emerald-50/80 dark:bg-zinc-900/90 border border-emerald-200 dark:border-zinc-800 rounded-xl flex items-center gap-3 text-sm text-emerald-800 dark:text-emerald-400 font-mono animate-pulse shadow-xs">
-              <Loader2 className="w-4 h-4 animate-spin text-emerald-600 dark:text-emerald-400 shrink-0" />
-              <span>{loadingStep || 'Executing crawl & compliance pipeline...'}</span>
-            </div>
-          )}
-
-          {/* Error Message */}
-          {errorMsg && (
-            <div className="p-4 bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50 rounded-xl text-rose-800 dark:text-rose-300 text-sm flex items-start gap-2 shadow-xs">
-              <AlertTriangle className="w-4 h-4 text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
-              <div>
-                <span className="font-bold">Audit Notice:</span> {errorMsg}
-                <div className="text-xs text-rose-700 dark:text-rose-400/80 mt-1">
-                  Tip: Toggle to &quot;Mock Mode&quot; in the top bar to inspect pre-scraped test cases without external rate limits.
+              <div className="card" style={{ padding: '16px' }}>
+                <div style={{ fontSize: '11px', color: 'var(--text-tertiary)', textTransform: 'uppercase', fontWeight: 600, marginBottom: '4px' }}>
+                  Reconciliation Progress
+                </div>
+                <div style={{ fontSize: '20px', fontWeight: 600, color: 'var(--status-confirmed-text)' }}>
+                  {confirmedChains.length} / {workspace.chains.length}
+                </div>
+                <div style={{ fontSize: '11.5px', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                  {Math.round((confirmedChains.length / Math.max(1, workspace.chains.length)) * 100)}% Verified by human
                 </div>
               </div>
             </div>
-          )}
-        </section>
 
-        {/* Audit Results Container */}
-        {auditData && (
-          <section className="space-y-6">
-            {restoredNotice && (
-              <div className="p-3 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-800/60 rounded-xl text-emerald-800 dark:text-emerald-300 text-xs flex items-center justify-between gap-3 shadow-xs">
-                <div className="flex items-center gap-2">
-                  <History className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>
-                    <strong className="font-semibold">LOCAL AUDIT VAULT:</strong> {restoredNotice}
+            {/* Active 3-Way Reconciliation Chain Visualizer */}
+            {selectedChain && (
+              <section style={{ marginBottom: '24px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <h3 style={{ fontSize: '15px', fontWeight: 600, margin: 0 }}>
+                    Selected Chain Inspection (3-Way Link)
+                  </h3>
+                  <span style={{ fontSize: '12px', color: 'var(--text-tertiary)' }}>
+                    Click any table row below to inspect
                   </span>
                 </div>
-                <button
-                  onClick={handleClearReview}
-                  className="text-[11px] underline text-emerald-700 dark:text-emerald-400 hover:text-emerald-900"
-                >
-                  Reset Review
-                </button>
-              </div>
+                <ReconciliationChainView
+                  chain={selectedChain}
+                  onConfirm={handleConfirmMatch}
+                  onUnlink={handleUnlinkMatch}
+                  onFlagInquiry={handleFlagInquiry}
+                />
+              </section>
             )}
 
-            {/* Top Scorecard Badge */}
-            <ScorecardBadge
-              score={auditData.overallScore}
-              status={auditData.status}
-              domain={auditData.domain}
-              url={auditData.merchantUrl}
-              timestamp={auditData.auditTimestamp}
-              humanDecision={auditData.humanDecision}
-            />
-
-            {/* Executive Summary Memo & HITL Governance Disclaimer */}
-            <div className="p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800/80 space-y-2.5 shadow-xs transition-colors">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
-                  <CheckCircle2 className="w-4 h-4" />
-                  Executive Risk Memo
-                </div>
-                <div className="flex items-center gap-1.5 text-[11px] text-zinc-500 font-mono">
-                  <UserCheck className="w-3.5 h-3.5 text-zinc-400" />
-                  <span>HITL Verification Ready</span>
-                </div>
+            {/* Master Review Workspace Ledger */}
+            <section>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <h3 style={{ fontSize: '15px', fontWeight: 600, margin: 0 }}>
+                  Reconciliation Master Ledger
+                </h3>
+                <span style={{ fontSize: '12px', color: 'var(--text-tertiary)' }}>
+                  Showing {workspace.chains.length} active chains
+                </span>
               </div>
-              <p className="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed font-medium">
-                {auditData.executiveSummary}
-              </p>
-            </div>
-
-            {/* Tab Navigation */}
-            <div className="border-b border-zinc-200 dark:border-zinc-800 flex items-center gap-6 text-sm overflow-x-auto">
-              <button
-                onClick={() => setActiveTab('scorecard')}
-                className={`pb-3 font-semibold flex items-center gap-2 transition border-b-2 -mb-[1px] whitespace-nowrap ${
-                  activeTab === 'scorecard'
-                    ? 'border-emerald-600 text-emerald-700 dark:border-emerald-400 dark:text-emerald-400'
-                    : 'border-transparent text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200'
-                }`}
-              >
-                <Shield className="w-4 h-4" />
-                Mandatory Policies
-              </button>
-
-              <button
-                onClick={() => setActiveTab('identity')}
-                className={`pb-3 font-semibold flex items-center gap-2 transition border-b-2 -mb-[1px] whitespace-nowrap ${
-                  activeTab === 'identity'
-                    ? 'border-emerald-600 text-emerald-700 dark:border-emerald-400 dark:text-emerald-400'
-                    : 'border-transparent text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200'
-                }`}
-              >
-                <Layers className="w-4 h-4" />
-                Entity Verification
-              </button>
-
-              <button
-                onClick={() => setActiveTab('prohibited')}
-                className={`pb-3 font-semibold flex items-center gap-2 transition border-b-2 -mb-[1px] whitespace-nowrap ${
-                  activeTab === 'prohibited'
-                    ? 'border-emerald-600 text-emerald-700 dark:border-emerald-400 dark:text-emerald-400'
-                    : 'border-transparent text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200'
-                }`}
-              >
-                <AlertTriangle className="w-4 h-4" />
-                Prohibited Goods Risk
-                <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-semibold">
-                  {auditData.prohibitedRisk.length}
-                </span>
-              </button>
-
-              <button
-                onClick={() => setActiveTab('pages')}
-                className={`pb-3 font-semibold flex items-center gap-2 transition border-b-2 -mb-[1px] whitespace-nowrap ${
-                  activeTab === 'pages'
-                    ? 'border-emerald-600 text-emerald-700 dark:border-emerald-400 dark:text-emerald-400'
-                    : 'border-transparent text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200'
-                }`}
-              >
-                <FileCode2 className="w-4 h-4" />
-                Crawled Evidence
-                <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-semibold">
-                  {auditData.crawledPages.length}
-                </span>
-              </button>
-            </div>
-
-            {/* Tab Contents */}
-            <div className="space-y-6">
-              {activeTab === 'scorecard' && (
-                <PolicyList
-                  policies={auditData.policies}
-                  onPolicyOverride={handlePolicyOverride}
-                />
-              )}
-              {activeTab === 'identity' && <BusinessIdentityCard identity={auditData.businessIdentity} />}
-              {activeTab === 'prohibited' && <ProhibitedRiskCard risks={auditData.prohibitedRisk} />}
-              {activeTab === 'pages' && (
-                <div className="bg-white dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 space-y-5 shadow-xs">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div>
-                      <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100">Multi-Page Inspection Coverage</h3>
-                      <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Bounded same-origin pages crawled and evaluated for evidence</p>
-                    </div>
-                    {auditData.coverage && (
-                      <div className="flex items-center gap-2 text-xs font-mono">
-                        <span className="px-2.5 py-1 rounded bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700/50">
-                          {auditData.coverage.pagesInspected} Inspected
-                        </span>
-                        {auditData.coverage.pagesFailed > 0 && (
-                          <span className="px-2.5 py-1 rounded bg-rose-50 dark:bg-rose-950/40 text-rose-800 dark:text-rose-300 border border-rose-300 dark:border-rose-700/50">
-                            {auditData.coverage.pagesFailed} Failed
-                          </span>
-                        )}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="divide-y divide-zinc-200 dark:divide-zinc-800/80 border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden font-mono text-xs">
-                    {auditData.crawledPages.map((page, idx) => (
-                      <div key={idx} className="p-3.5 bg-zinc-50/50 dark:bg-zinc-950/40 flex items-center justify-between gap-4">
-                        <div className="truncate">
-                          <div className="flex items-center gap-2">
-                            <span className="text-zinc-900 dark:text-zinc-200 font-sans font-semibold truncate">{page.title}</span>
-                            {page.category && (
-                              <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 uppercase">
-                                {page.category}
-                              </span>
-                            )}
-                          </div>
-                          <div className="text-zinc-500 text-[11px] truncate mt-0.5">{page.url}</div>
-                        </div>
-                        <div className="flex items-center gap-2 shrink-0">
-                          <span className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${
-                            (page.inspectionStatus === 'INSPECTED' || page.status === 200)
-                              ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/20'
-                              : 'bg-rose-50 dark:bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-200 dark:border-rose-500/20'
-                          }`}>
-                            {page.inspectionStatus || `HTTP ${page.status}`}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Sticky Human Decision & Governance Bar */}
-            <HumanDecisionBar
-              merchantDomain={auditData.domain}
-              onDecision={handleHumanDecision}
-              currentDecision={auditData.humanDecision}
-              decisionHistory={decisionHistory}
-              onClearReview={handleClearReview}
-            />
-          </section>
+              <LedgerTable
+                chains={workspace.chains}
+                selectedChainId={workspace.selectedChainId}
+                onSelectChain={id => setWorkspace({ ...workspace, selectedChainId: id })}
+                onConfirmChain={handleConfirmMatch}
+                onUnlinkChain={handleUnlinkMatch}
+              />
+            </section>
+          </div>
         )}
+
+        {/* VIEW: PRD SPECS & GUIDELINES */}
+        {currentView === 'readme' && (
+          <div className="card" style={{ padding: '32px', lineHeight: 1.7 }}>
+            <h2 style={{ fontSize: '22px', marginBottom: '8px' }}>RemitLens Product Architecture (PRD v0.1)</h2>
+            <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '20px' }}>
+              Reference guide on non-goals, data integrity invariants, and matching rules.
+            </p>
+
+            <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '20px 0' }} />
+
+            <h3 style={{ fontSize: '16px', marginBottom: '6px' }}>1. The One Core Question</h3>
+            <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '16px' }}>
+              RemitLens establishes an inspectable 3-way chain connecting:
+              <br />
+              <strong>1. Client Invoices (USD/EUR/GBP)</strong> ➔ <strong>2. Provider Settlement Records (Stripe/Wise)</strong> ➔ <strong>3. Indian Bank Credits (INR)</strong>.
+            </p>
+
+            <h3 style={{ fontSize: '16px', marginBottom: '6px' }}>2. Strict Data Integrity Invariants</h3>
+            <ul style={{ paddingLeft: '20px', fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '16px' }}>
+              <li><strong>No Floating Point Math:</strong> All values stored as 64-bit integer minor units (paise/cents).</li>
+              <li><strong>Suggestion Is Not Fact:</strong> Suggestions use dashed borders and spark glyphs. Checkmarks only appear after human confirmation.</li>
+              <li><strong>Missing Stays Missing:</strong> Missing fields render as <em>"Not provided"</em> in muted italics. Never coerced to 0.00 or N/A.</li>
+              <li><strong>Never Guess Intermediary Charges:</strong> Unaccounted transit gaps are strictly labeled as <em>"Unexplained Difference"</em>.</li>
+            </ul>
+
+            <h3 style={{ fontSize: '16px', marginBottom: '6px' }}>3. Non-Goals & Boundaries (PRD §6)</h3>
+            <p style={{ fontSize: '13px', color: 'var(--text-secondary)', margin: 0 }}>
+              RemitLens is strictly a financial operations tool. It does not touch or move money, does not issue regulatory FIRCs, and does not provide tax or FEMA advice.
+            </p>
+          </div>
+        )}
+
       </main>
+
+      {/* Overlays & Modals */}
+      <ImportModal
+        isOpen={isImportOpen}
+        onClose={() => setIsImportOpen(false)}
+        onImportData={handleImportNewData}
+      />
+
+      <ExportModal
+        isOpen={isExportOpen}
+        onClose={() => setIsExportOpen(false)}
+        chains={workspace.chains}
+      />
+
+      <AuditLogModal
+        isOpen={isAuditOpen}
+        onClose={() => setIsAuditOpen(false)}
+        auditLogs={workspace.auditLogs}
+        onUndo={workspace.lastUndoableAction ? handleUndo : undefined}
+      />
+
+      {toastMessage && (
+        <Toast
+          message={toastMessage.text}
+          actionLabel={toastMessage.action}
+          onAction={toastMessage.onAction}
+          onClose={() => setToastMessage(null)}
+        />
+      )}
     </div>
   );
 }

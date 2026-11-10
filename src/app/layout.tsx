@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Merchant Evidence Copilot — Website Evidence & Risk Review Assistant",
-  description: "Human-reviewed website evidence and risk-review assistant for merchant onboarding teams.",
+  title: "RemitLens — Cross-Border Payment Reconciliation for Indian Exporters",
+  description: "Deterministic 3-way reconciliation connecting client invoices, payment settlements, and Indian bank credits with auditable difference breakdown.",
 };
 
 export default function RootLayout({
@@ -25,9 +25,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
+      data-theme="dark"
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 selection:bg-emerald-500/20 selection:text-emerald-700 dark:selection:text-emerald-300 font-sans transition-colors duration-200">
+      <body className="min-h-full flex flex-col font-sans transition-colors duration-200">
         {children}
       </body>
     </html>

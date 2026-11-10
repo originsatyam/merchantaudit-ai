@@ -1,123 +1,117 @@
-export type AuditStatus = 'COMPLIANT' | 'NEEDS_REVIEW' | 'HIGH_RISK';
+/**
+ * RemitLens Core Type Contracts
+ * Strictly aligned with RemitLens PRD v0.1 & Financial Operations Standards
+ */
 
-export type FindingStatus = 'OBSERVED' | 'POTENTIAL_CONCERN' | 'NOT_OBSERVED' | 'UNABLE_TO_VERIFY';
+// The 8 Non-Negotiable Canonical UI Statuses
+export type ReconciliationStatus =
+  | 'suggested'              // Algorithmic or heuristic suggestion (dashed border, no checkmark)
+  | 'confirmed'              // Human approved & locked with audit stamp
+  | 'partial'                // Split payment or milestone settlement
+  | 'needs_review'          // Ambiguity detected (multiple candidates, date tolerance)
+  | 'duplicate_suspected'    // Identical refs/amounts collision
+  | 'unmatched'              // Orphan invoice or bank credit
+  | 'documented_difference'  // Explained by itemised source records (e.g. Stripe fee)
+  | 'unexplained_difference';// Gap with no source explanation (never guess intermediary bank fee)
 
-export interface PolicyCheck {
+export type EvidenceTier = 'exact' | 'heuristic' | 'supporting';
+
+export interface SourceProvenance {
+  fileName: string;
+  rowNumber: number;
+  uploadedAt: string;
+  sourceType: 'invoice_register' | 'provider_settlement' | 'bank_statement';
+  rawRecordSnippet?: string;
+}
+
+export interface MoneyValue {
+  minorUnits: number; // Stored as integer (e.g. 500000 = $5,000.00 or ₹5,000.00)
+  currency: 'USD' | 'EUR' | 'GBP' | 'INR' | string;
+}
+
+export interface InvoiceRecord {
   id: string;
-  name: string;
-  required: boolean;
-  found: boolean;
-  findingStatus?: FindingStatus;
-  url?: string;
-  sourceUrl?: string;
-  sourcePageTitle?: string;
-  summary: string;
-  confidenceScore: number;
-  evidenceSnippet?: string;
-  recommendation?: string;
-  recommendedVerification?: string;
-  limitations?: string;
-  humanOverride?: {
-    verified: boolean;
-    overriddenStatus?: 'COMPLIANT' | 'NON_COMPLIANT';
-    reviewerNote?: string;
-    verifiedAt?: string;
-  };
+  invoiceNumber: string;
+  clientName: string;
+  issueDate: string;
+  dueDate?: string;
+  amount: MoneyValue;
+  currency: string;
+  description?: string;
+  provenance: SourceProvenance;
 }
 
-export interface BusinessIdentity {
-  legalEntityName?: string;
-  claimedName?: string;
-  entityMatch: boolean | 'UNCERTAIN';
-  taxId?: string; // GSTIN, PAN, EIN, CIN
-  addressFound: boolean;
-  physicalAddress?: string;
-  supportEmail?: string;
-  supportPhone?: string;
-  evidenceSnippet?: string;
-  sourceUrl?: string;
+export interface ProviderFeeItem {
+  label: string;
+  amount: MoneyValue;
+  category: 'processing_fee' | 'fx_spread' | 'payout_charge' | 'other';
+  provenance?: SourceProvenance;
 }
 
-export interface ProhibitedRiskItem {
-  category: string;
-  severity: 'CRITICAL' | 'WARNING' | 'CLEAR';
-  flaggedKeywords: string[];
-  explanation: string;
-  evidenceSnippet?: string;
-  sourceUrl?: string;
-}
-
-export type ReviewVerdict = 'APPROVED' | 'REJECTED' | 'REQUEST_INFO' | 'ESCALATED' | 'PENDING';
-
-export interface HumanAuditSignoff {
-  verdict: ReviewVerdict;
-  reviewerName?: string;
-  reviewerId?: string;
-  rationale?: string;
-  checklistConfirmed?: {
-    policiesReviewed: boolean;
-    identityVerified: boolean;
-    prohibitedGoodsCleared: boolean;
-  };
-  auditHash?: string;
-  reviewedAt?: string;
-}
-
-export interface InspectedPage {
-  title: string;
-  url: string;
-  category: 'home' | 'terms' | 'privacy' | 'refund' | 'shipping' | 'contact' | 'other';
-  status: 'INSPECTED' | 'FAILED' | 'NOT_FOUND';
-  httpStatus?: number;
-  errorMessage?: string;
-  content?: string;
-}
-
-export interface InspectionCoverage {
-  pagesRequested: number;
-  pagesInspected: number;
-  pagesFailed: number;
-  discoveredPolicyPages: {
-    terms?: string | null;
-    privacy?: string | null;
-    refund?: string | null;
-    shipping?: string | null;
-    contact?: string | null;
-  };
-}
-
-export interface AuditResult {
+export interface SettlementRecord {
   id: string;
-  merchantUrl: string;
-  domain: string;
-  auditTimestamp: string;
-  overallScore: number; // 0 to 100
-  status: AuditStatus;
-  executiveSummary: string;
-  businessIdentity: BusinessIdentity;
-  policies: {
-    termsOfService: PolicyCheck;
-    privacyPolicy: PolicyCheck;
-    refundPolicy: PolicyCheck;
-    shippingOrDeliveryPolicy: PolicyCheck;
-    contactUs: PolicyCheck;
-  };
-  prohibitedRisk: ProhibitedRiskItem[];
-  coverage?: InspectionCoverage;
-  crawledPages: {
-    title: string;
-    url: string;
-    status: number;
-    category?: string;
-    inspectionStatus?: 'INSPECTED' | 'FAILED' | 'NOT_FOUND';
-    errorMessage?: string;
-  }[];
-  humanDecision?: HumanAuditSignoff;
+  provider: 'Stripe' | 'Wise' | 'Payoneer' | 'BankWire' | string;
+  reference: string;
+  date: string;
+  grossAmount: MoneyValue;
+  feeDeductions: ProviderFeeItem[];
+  netSettlementAmount: MoneyValue;
+  currency: string;
+  provenance: SourceProvenance;
 }
 
-export interface AuditRequest {
-  url: string;
-  legalEntityName?: string;
-  taxId?: string;
-  forceMock?: boolean;
+export interface BankCreditRecord {
+  id: string;
+  utrReference: string;
+  valueDate: string;
+  creditAmountINR: MoneyValue;
+  narration: string;
+  provenance: SourceProvenance;
+}
+
+export interface MatchEvidence {
+  tier: EvidenceTier;
+  field: string;
+  description: string;
+  confidenceScore: number; // 0 to 100
+}
+
+export interface ReconciliationChain {
+  id: string;
+  chainReference: string;
+  status: ReconciliationStatus;
+  invoice?: InvoiceRecord;
+  settlement?: SettlementRecord;
+  bankCredit?: BankCreditRecord;
+  evidence: MatchEvidence[];
+  overallConfidence: number; // 0 to 100
+  documentedDifferences: ProviderFeeItem[];
+  unexplainedDifferenceINR?: MoneyValue;
+  impliedFxRate?: number; // e.g. 82.68
+  confirmedBy?: string;
+  confirmedAt?: string;
+  operatorNotes?: string;
+  isFlaggedForInquiry?: boolean;
+}
+
+export interface AuditLogEntry {
+  id: string;
+  timestamp: string;
+  operatorEmail: string;
+  action: 'CONFIRM_MATCH' | 'UNLINK_MATCH' | 'IMPORT_FILE' | 'EXPORT_REPORT' | 'ADD_NOTE' | 'FLAG_INQUIRY';
+  chainId?: string;
+  chainReference?: string;
+  details: string;
+  previousState?: ReconciliationStatus;
+  newState?: ReconciliationStatus;
+  undoable: boolean;
+}
+
+export interface ReconciliationSummary {
+  totalInvoicedByCurrency: Record<string, number>; // Minor units by ISO currency
+  totalBankCreditedINR: number;                   // Paise
+  totalDocumentedFeesINR: number;                 // Paise
+  totalUnexplainedGapsINR: number;                // Paise
+  countsByStatus: Record<ReconciliationStatus, number>;
+  totalChains: number;
 }

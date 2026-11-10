@@ -1,103 +1,106 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { ShieldCheck, Sparkles, Terminal, Sun, Moon } from 'lucide-react';
+import React from 'react';
+import {
+  Layers,
+  UploadCloud,
+  FileSpreadsheet,
+  Download,
+  Sun,
+  Moon,
+  ShieldCheck,
+  BookOpen,
+  LayoutDashboard
+} from 'lucide-react';
 
 interface NavbarProps {
-  onSelectSample: (type: 'valid' | 'pharma' | 'missing') => void;
-  mockMode: boolean;
-  setMockMode: (val: boolean) => void;
+  currentView: 'workspace' | 'import' | 'audit' | 'readme';
+  onViewChange: (view: 'workspace' | 'import' | 'audit' | 'readme') => void;
+  onOpenExport: () => void;
+  isDarkMode: boolean;
+  onToggleTheme: () => void;
+  confirmedCount: number;
+  totalChains: number;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onSelectSample, mockMode, setMockMode }) => {
-  const [isDark, setIsDark] = useState(true);
-
-  useEffect(() => {
-    const isCurrentlyDark = document.documentElement.classList.contains('dark');
-    setIsDark(isCurrentlyDark);
-  }, []);
-
-  const toggleTheme = () => {
-    const nextDark = !isDark;
-    setIsDark(nextDark);
-    if (nextDark) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  };
-
+export const Navbar: React.FC<NavbarProps> = ({
+  currentView,
+  onViewChange,
+  onOpenExport,
+  isDarkMode,
+  onToggleTheme,
+  confirmedCount,
+  totalChains,
+}) => {
   return (
-    <header className="border-b border-zinc-200 dark:border-zinc-800/80 bg-white/80 dark:bg-zinc-950/70 backdrop-blur-md sticky top-0 z-50 transition-colors duration-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        {/* Brand */}
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 p-[1px] shadow-lg shadow-emerald-500/10">
-            <div className="w-full h-full bg-white dark:bg-zinc-950 rounded-[11px] flex items-center justify-center transition-colors">
-              <ShieldCheck className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-            </div>
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-zinc-900 dark:text-zinc-100 text-base tracking-tight">Merchant Evidence Copilot</span>
-              <span className="text-[10px] font-semibold tracking-wider px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">Decision Support</span>
-            </div>
-            <p className="text-xs text-zinc-500 hidden sm:block">Website Evidence & Risk Review Assistant</p>
-          </div>
+    <header className="header">
+      {/* Brand logo */}
+      <div className="brand" onClick={() => onViewChange('workspace')} style={{ cursor: 'pointer' }}>
+        <div className="brand-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            <path d="M11 8v6M8 11h6"></path>
+          </svg>
+        </div>
+        <span>RemitLens</span>
+        <span className="version-tag">B2B Recon</span>
+      </div>
+
+      {/* Segmented View Switcher */}
+      <nav className="view-tabs" role="tablist">
+        <button
+          className={`view-tab ${currentView === 'workspace' ? 'active' : ''}`}
+          onClick={() => onViewChange('workspace')}
+        >
+          <LayoutDashboard size={13} />
+          Workspace
+        </button>
+        <button
+          className={`view-tab ${currentView === 'import' ? 'active' : ''}`}
+          onClick={() => onViewChange('import')}
+        >
+          <UploadCloud size={13} />
+          Import Files
+        </button>
+        <button
+          className={`view-tab ${currentView === 'audit' ? 'active' : ''}`}
+          onClick={() => onViewChange('audit')}
+        >
+          <ShieldCheck size={13} />
+          Audit Trail
+        </button>
+        <button
+          className={`view-tab ${currentView === 'readme' ? 'active' : ''}`}
+          onClick={() => onViewChange('readme')}
+        >
+          <BookOpen size={13} />
+          PRD Specs
+        </button>
+      </nav>
+
+      {/* Right controls */}
+      <div className="header-actions">
+        {/* Workspace Progress Indicator */}
+        <div style={{ fontSize: '11.5px', color: 'var(--text-tertiary)', marginRight: '4px' }}>
+          <strong style={{ color: 'var(--status-confirmed-text)' }}>{confirmedCount}</strong> of {totalChains} verified
         </div>
 
-        {/* Quick Sample Selector & Theme & Engine Toggles */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          {/* Preset Buttons */}
-          <div className="hidden lg:flex items-center gap-1.5 text-xs text-zinc-600 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-900/90 border border-zinc-200 dark:border-zinc-800 rounded-lg p-1">
-            <span className="px-2 text-zinc-400 dark:text-zinc-500 font-medium flex items-center gap-1">
-              <Sparkles className="w-3 h-3 text-amber-500 dark:text-amber-400" />
-              Presets:
-            </span>
-            <button
-              onClick={() => onSelectSample('valid')}
-              className="px-2.5 py-1 rounded text-xs hover:bg-white dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition shadow-xs"
-            >
-              Compliant D2C
-            </button>
-            <button
-              onClick={() => onSelectSample('missing')}
-              className="px-2.5 py-1 rounded text-xs hover:bg-white dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:text-amber-600 dark:hover:text-amber-400 transition shadow-xs"
-            >
-              Needs Review SaaS
-            </button>
-            <button
-              onClick={() => onSelectSample('pharma')}
-              className="px-2.5 py-1 rounded text-xs hover:bg-white dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:text-rose-600 dark:hover:text-rose-400 transition shadow-xs"
-            >
-              High Risk Pharma
-            </button>
-          </div>
+        {/* Theme Toggle */}
+        <button
+          className="btn btn-ghost btn-sm"
+          onClick={onToggleTheme}
+          title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+        >
+          {isDarkMode ? <Sun size={14} /> : <Moon size={14} />}
+          <span>{isDarkMode ? 'Light' : 'Dark'}</span>
+        </button>
 
-          {/* Engine Mode Toggle */}
-          <button
-            onClick={() => setMockMode(!mockMode)}
-            className={`flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg border transition ${
-              mockMode
-                ? 'bg-amber-500/10 border-amber-500/30 text-amber-700 dark:text-amber-400'
-                : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-400'
-            }`}
-            title="Toggle between zero-token instant demo mode and live Firecrawl scraping"
-          >
-            <Terminal className="w-3.5 h-3.5" />
-            <span className="font-mono text-[11px] font-medium">{mockMode ? 'Mock Mode' : 'Live Crawl'}</span>
-          </button>
-
-          {/* Light / Dark Mode Toggle Button */}
-          <button
-            onClick={toggleTheme}
-            className="p-2 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition"
-            title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-            aria-label="Toggle theme"
-          >
-            {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-zinc-700" />}
-          </button>
-        </div>
+        {/* Export Button */}
+        <button className="btn btn-primary btn-sm" onClick={onOpenExport}>
+          <Download size={13} />
+          Export Ledger
+        </button>
       </div>
     </header>
   );
