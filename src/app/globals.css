@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 /* ==========================================================================
-   REMITLENS DESIGN SYSTEM TOKENS (Next.js Edition)
-   Strictly aligned with RemitLens PRD v0.1, Linear, Supabase, and Apple UX
+   REMITLENS DESIGN SYSTEM (Complete Obsidian / Linear / Supabase Edition)
+   Strictly aligned with RemitLens PRD v0.1, Linear minimalism, Apple fluid motion
    ========================================================================== */
 
 :root {
@@ -30,7 +30,7 @@
   --accent-subtle: rgba(94, 106, 210, 0.12);
   --accent-border: rgba(94, 106, 210, 0.3);
 
-  /* Status Colors */
+  /* Finite 8 Canonical Statuses (Lucide Palette) */
   --status-confirmed-text: #34d399;
   --status-confirmed-bg: rgba(52, 211, 153, 0.09);
   --status-confirmed-border: rgba(52, 211, 153, 0.24);
@@ -84,8 +84,10 @@
   --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.15);
   --dur-fast: 120ms;
   --dur-base: 220ms;
+  --dur-slow: 380ms;
 }
 
+/* Light Theme (Clean Supabase / Apple Pro Light) */
 [data-theme="light"] {
   --bg: #fbfbfd;
   --bg-subtle: #f5f5f7;
@@ -143,6 +145,11 @@
   --shadow-lg: 0 16px 36px -4px rgba(0, 0, 0, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.04);
 }
 
+/* Global Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 body {
   background-color: var(--bg);
   color: var(--text-primary);
@@ -150,70 +157,133 @@ body {
   line-height: 1.5;
   letter-spacing: -0.012em;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  transition: background-color var(--dur-base) var(--ease-apple);
 }
 
-/* Tabular Money Numerals */
-.amt {
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.02em;
-  white-space: nowrap;
-}
-.amt .cur {
-  font-size: 11px;
-  color: var(--text-tertiary);
-  margin-right: 4px;
-  font-weight: 500;
-}
-.amt.pos { color: var(--status-confirmed-text); font-weight: 600; }
-.amt.neg { color: var(--status-unexplained-text); font-weight: 600; }
+/* ==========================================================================
+   NAVIGATION BAR (Glassmorphic Linear Header)
+   ========================================================================== */
 
-/* Provenance Chip */
-.src-chip {
-  display: inline-flex;
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 54px;
+  background: rgba(9, 10, 12, 0.85);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--border);
+  display: flex;
   align-items: center;
-  gap: 5px;
+  justify-content: space-between;
+  padding: 0 24px;
+  gap: 16px;
+  transition: background var(--dur-base) var(--ease-apple);
+}
+
+[data-theme="light"] .header {
+  background: rgba(251, 251, 253, 0.88);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 14.5px;
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.brand-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  background: var(--text-primary);
+  color: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--dur-fast) var(--ease-spring);
+}
+
+.brand:hover .brand-icon {
+  transform: rotate(-6deg) scale(1.06);
+}
+
+.version-tag {
+  font-size: 10.5px;
+  color: var(--text-tertiary);
+  border: 1px solid var(--border);
+  padding: 1px 6px;
+  border-radius: var(--radius-pill);
+  font-weight: 500;
   font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--text-secondary);
+}
+
+/* Linear-style Segmented View Tabs */
+.view-tabs {
+  position: relative;
+  display: flex;
+  align-items: center;
   background: var(--bg-subtle);
   border: 1px solid var(--border);
-  padding: 2px 6px;
-  border-radius: var(--radius-xs);
-  cursor: pointer;
-  transition: all var(--dur-fast) var(--ease-apple);
-}
-.src-chip:hover {
-  color: var(--text-primary);
-  border-color: var(--border-focus);
-  transform: translateY(-1px);
+  padding: 3px;
+  border-radius: var(--radius-md);
+  gap: 3px;
 }
 
-/* Lucide Status Badges */
-.badge {
+.view-tab {
+  position: relative;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-secondary);
+  font-size: 12.5px;
+  font-weight: 500;
+  font-family: inherit;
+  padding: 5px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 2px 8px;
-  border-radius: var(--radius-pill);
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 1.4;
+  gap: 6px;
   white-space: nowrap;
   transition: all var(--dur-fast) var(--ease-apple);
 }
-.badge svg { width: 13px; height: 13px; flex-shrink: 0; }
-.badge.confirmed { background: var(--status-confirmed-bg); color: var(--status-confirmed-text); border: 1px solid var(--status-confirmed-border); }
-.badge.suggested { background: var(--status-suggested-bg); color: var(--status-suggested-text); border: 1px dashed var(--status-suggested-border); }
-.badge.partial { background: var(--status-partial-bg); color: var(--status-partial-text); border: 1px dashed var(--status-partial-border); }
-.badge.review { background: var(--status-review-bg); color: var(--status-review-text); border: 1px solid var(--status-review-border); }
-.badge.duplicate { background: var(--status-duplicate-bg); color: var(--status-duplicate-text); border: 1px solid var(--status-duplicate-border); }
-.badge.unmatched { background: var(--status-unmatched-bg); color: var(--status-unmatched-text); border: 1px solid var(--status-unmatched-border); }
-.badge.documented { background: var(--status-documented-bg); color: var(--status-documented-text); border: 1px solid var(--status-documented-border); }
-.badge.unexplained { background: var(--status-unexplained-bg); color: var(--status-unexplained-text); border: 1px solid var(--status-unexplained-border); }
 
-/* Apple Spring Buttons */
+.view-tab:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.view-tab:active {
+  transform: scale(0.97);
+}
+
+.view-tab.active {
+  background: var(--surface);
+  color: var(--text-primary);
+  border-color: var(--border);
+  box-shadow: var(--shadow-sm);
+  font-weight: 550;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   BUTTONS (Apple Fluid Spring Curves)
+   ========================================================================== */
+
 .btn {
   font-family: inherit;
   font-size: 12.5px;
@@ -230,54 +300,344 @@ body {
   color: var(--text-primary);
   cursor: pointer;
   white-space: nowrap;
+  text-decoration: none;
   transition: all var(--dur-fast) var(--ease-apple);
+  user-select: none;
 }
+
 .btn:hover {
   background: var(--surface-hover);
   border-color: var(--border-focus);
   transform: translateY(-1px);
 }
+
 .btn:active {
   transform: scale(0.96) translateY(0);
 }
+
 .btn-primary {
   background: var(--text-primary);
   color: var(--bg);
   border-color: var(--text-primary);
   font-weight: 600;
 }
+
 .btn-primary:hover {
   background: #ffffff;
   border-color: #ffffff;
   color: #000;
   box-shadow: 0 0 16px rgba(255, 255, 255, 0.18);
 }
+
 [data-theme="light"] .btn-primary:hover {
   background: #000000;
   border-color: #000000;
   color: #fff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
 }
+
 .btn-ghost {
   background: transparent;
   border-color: transparent;
   color: var(--text-secondary);
 }
+
 .btn-ghost:hover {
   background: var(--surface-hover);
   border-color: transparent;
   color: var(--text-primary);
 }
+
 .btn-danger {
   background: var(--status-unexplained-bg);
   color: var(--status-unexplained-text);
   border-color: var(--status-unexplained-border);
 }
+
 .btn-danger:hover {
-  background: rgba(251, 113, 133, 0.16);
+  background: rgba(251, 113, 133, 0.18);
+  border-color: var(--status-unexplained-text);
 }
+
 .btn-sm {
   height: 26px;
   padding: 0 9px;
   font-size: 11.5px;
+}
+
+/* ==========================================================================
+   CARDS & CONTAINERS
+   ========================================================================== */
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--dur-base) var(--ease-apple), box-shadow var(--dur-base) var(--ease-apple);
+}
+
+.card:hover {
+  border-color: var(--border-focus);
+}
+
+/* 3-Way Reconciliation Chain Grid */
+.recon-chain {
+  display: grid;
+  grid-template-columns: 1fr 36px 1fr 36px 1fr;
+  align-items: stretch;
+  gap: 0;
+  margin: 16px 0;
+}
+
+.recon-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all var(--dur-base) var(--ease-apple);
+}
+
+.recon-card:hover {
+  border-color: var(--border-focus);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.recon-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.recon-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tertiary);
+  transition: transform var(--dur-fast) var(--ease-apple);
+}
+
+/* ==========================================================================
+   STATUS BADGES (Official Lucide Indicators)
+   ========================================================================== */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 1.4;
+  white-space: nowrap;
+  user-select: none;
+  transition: all var(--dur-fast) var(--ease-apple);
+}
+
+.badge svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+
+.badge.confirmed {
+  background: var(--status-confirmed-bg);
+  color: var(--status-confirmed-text);
+  border: 1px solid var(--status-confirmed-border);
+}
+
+.badge.suggested {
+  background: var(--status-suggested-bg);
+  color: var(--status-suggested-text);
+  border: 1px dashed var(--status-suggested-border);
+}
+
+.badge.partial {
+  background: var(--status-partial-bg);
+  color: var(--status-partial-text);
+  border: 1px dashed var(--status-partial-border);
+}
+
+.badge.review {
+  background: var(--status-review-bg);
+  color: var(--status-review-text);
+  border: 1px solid var(--status-review-border);
+}
+
+.badge.duplicate {
+  background: var(--status-duplicate-bg);
+  color: var(--status-duplicate-text);
+  border: 1px solid var(--status-duplicate-border);
+}
+
+.badge.unmatched {
+  background: var(--status-unmatched-bg);
+  color: var(--status-unmatched-text);
+  border: 1px solid var(--status-unmatched-border);
+}
+
+.badge.documented {
+  background: var(--status-documented-bg);
+  color: var(--status-documented-text);
+  border: 1px solid var(--status-documented-border);
+}
+
+.badge.unexplained {
+  background: var(--status-unexplained-bg);
+  color: var(--status-unexplained-text);
+  border: 1px solid var(--status-unexplained-border);
+}
+
+/* ==========================================================================
+   NUMERALS & PROVENANCE CHIPS
+   ========================================================================== */
+
+.amt {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.amt .cur {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-right: 4px;
+  font-weight: 500;
+}
+
+.amt.pos {
+  color: var(--status-confirmed-text);
+  font-weight: 600;
+}
+
+.amt.neg {
+  color: var(--status-unexplained-text);
+  font-weight: 600;
+}
+
+.src-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  transition: all var(--dur-fast) var(--ease-apple);
+}
+
+.src-chip:hover {
+  color: var(--text-primary);
+  border-color: var(--border-focus);
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   TABLES (Linear Minimal Ledger)
+   ========================================================================== */
+
+.table-container {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--surface);
+}
+
+table.clean-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13px;
+}
+
+table.clean-table th {
+  padding: 10px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary);
+  background: var(--bg-subtle);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+table.clean-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  vertical-align: middle;
+}
+
+table.clean-table tr:last-child td {
+  border-bottom: none;
+}
+
+table.clean-table tr {
+  transition: background var(--dur-fast) var(--ease-apple);
+}
+
+table.clean-table tr:hover td {
+  background: var(--surface-hover);
+}
+
+/* ==========================================================================
+   ANIMATIONS
+   ========================================================================== */
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes toastSpring {
+  from { opacity: 0; transform: translateY(16px) scale(0.94); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.96) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN
+   ========================================================================== */
+
+@media (max-width: 900px) {
+  .header {
+    height: auto;
+    padding: 10px 16px;
+    flex-wrap: wrap;
+  }
+  .view-tabs {
+    order: 3;
+    width: 100%;
+    justify-content: space-between;
+    overflow-x: auto;
+  }
+  .recon-chain {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .recon-arrow {
+    transform: rotate(90deg);
+    padding: 4px 0;
+  }
 }

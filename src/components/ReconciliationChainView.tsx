@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { ReconciliationChain } from '../lib/types';
-import { formatMoney, formatMoneyOrMissing } from '../lib/money';
+import { formatMoney } from '../lib/money';
 import { StatusBadge } from './StatusBadge';
 import {
   FileText,
@@ -11,11 +11,9 @@ import {
   ArrowRight,
   Check,
   RotateCcw,
-  AlertTriangle,
   HelpCircle,
   Receipt,
-  ShieldCheck,
-  ExternalLink
+  ShieldCheck
 } from 'lucide-react';
 
 interface ReconciliationChainViewProps {
@@ -44,13 +42,12 @@ export const ReconciliationChainView: React.FC<ReconciliationChainViewProps> = (
     unexplainedDifferenceINR,
     impliedFxRate,
     confirmedBy,
-    confirmedAt,
   } = chain;
 
   const isConfirmed = status === 'confirmed';
 
   return (
-    <div className="card" style={{ padding: '24px', marginBottom: '24px' }}>
+    <div className="card" style={{ padding: '20px', marginBottom: '24px' }}>
       {/* Chain Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '8px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -71,8 +68,8 @@ export const ReconciliationChainView: React.FC<ReconciliationChainViewProps> = (
               onClick={() => onConfirm(id)}
               title="Verify and confirm this match"
             >
-              <Check size={14} strokeWidth={2.5} />
-              Confirm Match
+              <Check size={13} strokeWidth={2.5} />
+              <span>Confirm Match</span>
             </button>
           ) : (
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -85,7 +82,7 @@ export const ReconciliationChainView: React.FC<ReconciliationChainViewProps> = (
                 title="Unlink records and return to review"
               >
                 <RotateCcw size={13} />
-                Unlink
+                <span>Unlink</span>
               </button>
             </div>
           )}
@@ -97,50 +94,20 @@ export const ReconciliationChainView: React.FC<ReconciliationChainViewProps> = (
               title="Flag unaccounted gap for bank inquiry"
             >
               <HelpCircle size={13} />
-              Inquire Gap
+              <span>Inquire Gap</span>
             </button>
           )}
         </div>
       </div>
 
       {/* 3-Way Visualizer Grid */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 32px 1fr 32px 1fr',
-          alignItems: 'stretch',
-          gap: '0',
-          margin: '16px 0',
-        }}
-      >
+      <div className="recon-chain">
         {/* Node 1: Invoice */}
-        <div
-          style={{
-            background: 'var(--surface)',
-            border: '1px solid var(--border)',
-            borderRadius: 'var(--radius-md)',
-            padding: '16px',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-          }}
-        >
+        <div className="recon-card">
           <div>
-            <div
-              style={{
-                fontSize: '11px',
-                fontWeight: 600,
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em',
-                color: 'var(--text-tertiary)',
-                marginBottom: '8px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-              }}
-            >
+            <div className="recon-label">
               <FileText size={13} />
-              1. Client Invoice
+              <span>1. Client Invoice</span>
             </div>
             {invoice ? (
               <>
@@ -169,38 +136,16 @@ export const ReconciliationChainView: React.FC<ReconciliationChainViewProps> = (
         </div>
 
         {/* Arrow 1 */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-tertiary)' }}>
+        <div className="recon-arrow">
           <ArrowRight size={16} />
         </div>
 
         {/* Node 2: Provider Settlement */}
-        <div
-          style={{
-            background: 'var(--surface)',
-            border: '1px solid var(--border)',
-            borderRadius: 'var(--radius-md)',
-            padding: '16px',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-          }}
-        >
+        <div className="recon-card">
           <div>
-            <div
-              style={{
-                fontSize: '11px',
-                fontWeight: 600,
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em',
-                color: 'var(--text-tertiary)',
-                marginBottom: '8px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-              }}
-            >
+            <div className="recon-label">
               <CreditCard size={13} />
-              2. Provider Settlement
+              <span>2. Provider Settlement</span>
             </div>
             {settlement ? (
               <>
@@ -239,38 +184,16 @@ export const ReconciliationChainView: React.FC<ReconciliationChainViewProps> = (
         </div>
 
         {/* Arrow 2 */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-tertiary)' }}>
+        <div className="recon-arrow">
           <ArrowRight size={16} />
         </div>
 
         {/* Node 3: Bank Credit */}
-        <div
-          style={{
-            background: 'var(--surface)',
-            border: '1px solid var(--border)',
-            borderRadius: 'var(--radius-md)',
-            padding: '16px',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-          }}
-        >
+        <div className="recon-card">
           <div>
-            <div
-              style={{
-                fontSize: '11px',
-                fontWeight: 600,
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em',
-                color: 'var(--text-tertiary)',
-                marginBottom: '8px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-              }}
-            >
+            <div className="recon-label">
               <Building2 size={13} />
-              3. Indian Bank Credit
+              <span>3. Indian Bank Credit</span>
             </div>
             {bankCredit ? (
               <>
@@ -362,13 +285,12 @@ export const ReconciliationChainView: React.FC<ReconciliationChainViewProps> = (
           </div>
           {unexplainedDifferenceINR ? (
             <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '4px' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>Unaccounted shortfall:</span>
-                <span className="amt neg">{formatMoney(unexplainedDifferenceINR.minorUnits, 'INR')}</span>
+              <div className="amt neg" style={{ fontSize: '14px', fontWeight: 600, marginBottom: '2px' }}>
+                INR {formatMoney(unexplainedDifferenceINR.minorUnits, 'INR')} Missing in Transit
               </div>
-              <p style={{ fontSize: '11px', color: 'var(--text-tertiary)', margin: 0, lineHeight: 1.4 }}>
-                <strong>Strict Rule:</strong> No uploaded file accounts for this gap. RemitLens does not assume intermediary correspondent bank fees without evidence.
-              </p>
+              <div style={{ fontSize: '11.5px', color: 'var(--text-tertiary)', lineHeight: 1.4 }}>
+                Net bank credit is lower than expected after subtracting all documented provider fees. In accordance with PRD Rule #3, RemitLens never guesses intermediary correspondent bank deductions without file proof.
+              </div>
             </div>
           ) : (
             <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
@@ -378,25 +300,21 @@ export const ReconciliationChainView: React.FC<ReconciliationChainViewProps> = (
         </div>
       </div>
 
-      {/* Match Evidence Footnote */}
-      <div style={{ marginTop: '12px', display: 'flex', flexWrap: 'wrap', gap: '6px', alignItems: 'center' }}>
-        <span style={{ fontSize: '11px', color: 'var(--text-tertiary)', fontWeight: 600 }}>Evidence trail:</span>
-        {evidence.map((ev, i) => (
-          <span
-            key={i}
-            style={{
-              fontSize: '11px',
-              padding: '1px 6px',
-              borderRadius: 'var(--radius-xs)',
-              background: 'var(--bg-subtle)',
-              border: '1px solid var(--border)',
-              color: 'var(--text-secondary)',
-            }}
-          >
-            {ev.field}: {ev.description}
-          </span>
-        ))}
-      </div>
+      {/* Audit Evidence Trail */}
+      {evidence.length > 0 && (
+        <div style={{ marginTop: '14px', paddingTop: '12px', borderTop: '1px solid var(--border-subtle)' }}>
+          <div style={{ fontSize: '11px', color: 'var(--text-tertiary)', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            Evidence trail:
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+            {evidence.map((ev, i) => (
+              <span key={i} className="src-chip" style={{ fontSize: '10.5px' }}>
+                <strong style={{ color: 'var(--text-primary)' }}>{ev.field}:</strong> {ev.description}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

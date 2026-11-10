@@ -2,15 +2,14 @@
 
 import React from 'react';
 import {
-  Layers,
   UploadCloud,
-  FileSpreadsheet,
   Download,
   Sun,
   Moon,
   ShieldCheck,
   BookOpen,
-  LayoutDashboard
+  LayoutDashboard,
+  SearchCheck
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -34,55 +33,56 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   return (
     <header className="header">
-      {/* Brand logo */}
-      <div className="brand" onClick={() => onViewChange('workspace')} style={{ cursor: 'pointer' }}>
+      {/* Brand Logo */}
+      <div
+        className="brand"
+        onClick={() => onViewChange('workspace')}
+        style={{ cursor: 'pointer' }}
+        title="RemitLens - Cross-Border Payment Reconciliation"
+      >
         <div className="brand-icon">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            <path d="M11 8v6M8 11h6"></path>
-          </svg>
+          <SearchCheck size={14} strokeWidth={2.5} />
         </div>
         <span>RemitLens</span>
         <span className="version-tag">B2B Recon</span>
       </div>
 
       {/* Segmented View Switcher */}
-      <nav className="view-tabs" role="tablist">
+      <nav className="view-tabs" role="tablist" aria-label="Main Navigation">
         <button
           className={`view-tab ${currentView === 'workspace' ? 'active' : ''}`}
           onClick={() => onViewChange('workspace')}
         >
-          <LayoutDashboard size={13} />
-          Workspace
+          <LayoutDashboard size={13} strokeWidth={2} />
+          <span>Workspace</span>
         </button>
         <button
           className={`view-tab ${currentView === 'import' ? 'active' : ''}`}
           onClick={() => onViewChange('import')}
         >
-          <UploadCloud size={13} />
-          Import Files
+          <UploadCloud size={13} strokeWidth={2} />
+          <span>Import Files</span>
         </button>
         <button
           className={`view-tab ${currentView === 'audit' ? 'active' : ''}`}
           onClick={() => onViewChange('audit')}
         >
-          <ShieldCheck size={13} />
-          Audit Trail
+          <ShieldCheck size={13} strokeWidth={2} />
+          <span>Audit Trail</span>
         </button>
         <button
           className={`view-tab ${currentView === 'readme' ? 'active' : ''}`}
           onClick={() => onViewChange('readme')}
         >
-          <BookOpen size={13} />
-          PRD Specs
+          <BookOpen size={13} strokeWidth={2} />
+          <span>PRD Specs</span>
         </button>
       </nav>
 
-      {/* Right controls */}
+      {/* Right Controls */}
       <div className="header-actions">
         {/* Workspace Progress Indicator */}
-        <div style={{ fontSize: '11.5px', color: 'var(--text-tertiary)', marginRight: '4px' }}>
+        <div style={{ fontSize: '11.5px', color: 'var(--text-tertiary)', marginRight: '6px', whiteSpace: 'nowrap' }}>
           <strong style={{ color: 'var(--status-confirmed-text)' }}>{confirmedCount}</strong> of {totalChains} verified
         </div>
 
@@ -92,14 +92,14 @@ export const Navbar: React.FC<NavbarProps> = ({
           onClick={onToggleTheme}
           title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
         >
-          {isDarkMode ? <Sun size={14} /> : <Moon size={14} />}
+          {isDarkMode ? <Sun size={13} strokeWidth={2} /> : <Moon size={13} strokeWidth={2} />}
           <span>{isDarkMode ? 'Light' : 'Dark'}</span>
         </button>
 
         {/* Export Button */}
         <button className="btn btn-primary btn-sm" onClick={onOpenExport}>
-          <Download size={13} />
-          Export Ledger
+          <Download size={13} strokeWidth={2} />
+          <span>Export Ledger</span>
         </button>
       </div>
     </header>
