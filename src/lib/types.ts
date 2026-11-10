@@ -1,15 +1,22 @@
-﻿export type AuditStatus = 'COMPLIANT' | 'NEEDS_REVIEW' | 'HIGH_RISK';
+export type AuditStatus = 'COMPLIANT' | 'NEEDS_REVIEW' | 'HIGH_RISK';
+
+export type FindingStatus = 'OBSERVED' | 'POTENTIAL_CONCERN' | 'NOT_OBSERVED' | 'UNABLE_TO_VERIFY';
 
 export interface PolicyCheck {
   id: string;
   name: string;
   required: boolean;
   found: boolean;
+  findingStatus?: FindingStatus;
   url?: string;
+  sourceUrl?: string;
+  sourcePageTitle?: string;
   summary: string;
   confidenceScore: number;
   evidenceSnippet?: string;
   recommendation?: string;
+  recommendedVerification?: string;
+  limitations?: string;
   humanOverride?: {
     verified: boolean;
     overriddenStatus?: 'COMPLIANT' | 'NON_COMPLIANT';
@@ -28,6 +35,7 @@ export interface BusinessIdentity {
   supportEmail?: string;
   supportPhone?: string;
   evidenceSnippet?: string;
+  sourceUrl?: string;
 }
 
 export interface ProhibitedRiskItem {
@@ -36,6 +44,7 @@ export interface ProhibitedRiskItem {
   flaggedKeywords: string[];
   explanation: string;
   evidenceSnippet?: string;
+  sourceUrl?: string;
 }
 
 export interface HumanAuditSignoff {
@@ -50,6 +59,29 @@ export interface HumanAuditSignoff {
   };
   auditHash?: string;
   reviewedAt?: string;
+}
+
+export interface InspectedPage {
+  title: string;
+  url: string;
+  category: 'home' | 'terms' | 'privacy' | 'refund' | 'shipping' | 'contact' | 'other';
+  status: 'INSPECTED' | 'FAILED' | 'NOT_FOUND';
+  httpStatus?: number;
+  errorMessage?: string;
+  content?: string;
+}
+
+export interface InspectionCoverage {
+  pagesRequested: number;
+  pagesInspected: number;
+  pagesFailed: number;
+  discoveredPolicyPages: {
+    terms?: string | null;
+    privacy?: string | null;
+    refund?: string | null;
+    shipping?: string | null;
+    contact?: string | null;
+  };
 }
 
 export interface AuditResult {
@@ -69,10 +101,14 @@ export interface AuditResult {
     contactUs: PolicyCheck;
   };
   prohibitedRisk: ProhibitedRiskItem[];
+  coverage?: InspectionCoverage;
   crawledPages: {
     title: string;
     url: string;
     status: number;
+    category?: string;
+    inspectionStatus?: 'INSPECTED' | 'FAILED' | 'NOT_FOUND';
+    errorMessage?: string;
   }[];
   humanDecision?: HumanAuditSignoff;
 }

@@ -319,24 +319,49 @@ export default function HomePage() {
               {activeTab === 'identity' && <BusinessIdentityCard identity={auditData.businessIdentity} />}
               {activeTab === 'prohibited' && <ProhibitedRiskCard risks={auditData.prohibitedRisk} />}
               {activeTab === 'pages' && (
-                <div className="bg-white dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 space-y-4 shadow-xs">
-                  <div className="flex items-center justify-between">
+                <div className="bg-white dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 space-y-5 shadow-xs">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
-                      <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100">Crawled Pages & Status</h3>
-                      <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Pages parsed by Firecrawl during this audit pass</p>
+                      <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100">Multi-Page Inspection Coverage</h3>
+                      <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Bounded same-origin pages crawled and evaluated for evidence</p>
                     </div>
+                    {auditData.coverage && (
+                      <div className="flex items-center gap-2 text-xs font-mono">
+                        <span className="px-2.5 py-1 rounded bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700/50">
+                          {auditData.coverage.pagesInspected} Inspected
+                        </span>
+                        {auditData.coverage.pagesFailed > 0 && (
+                          <span className="px-2.5 py-1 rounded bg-rose-50 dark:bg-rose-950/40 text-rose-800 dark:text-rose-300 border border-rose-300 dark:border-rose-700/50">
+                            {auditData.coverage.pagesFailed} Failed
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </div>
 
                   <div className="divide-y divide-zinc-200 dark:divide-zinc-800/80 border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden font-mono text-xs">
                     {auditData.crawledPages.map((page, idx) => (
                       <div key={idx} className="p-3.5 bg-zinc-50/50 dark:bg-zinc-950/40 flex items-center justify-between gap-4">
                         <div className="truncate">
-                          <div className="text-zinc-900 dark:text-zinc-200 font-sans font-semibold truncate">{page.title}</div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-zinc-900 dark:text-zinc-200 font-sans font-semibold truncate">{page.title}</span>
+                            {page.category && (
+                              <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 uppercase">
+                                {page.category}
+                              </span>
+                            )}
+                          </div>
                           <div className="text-zinc-500 text-[11px] truncate mt-0.5">{page.url}</div>
                         </div>
-                        <span className="px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20 text-[10px] font-semibold">
-                          HTTP {page.status}
-                        </span>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${
+                            (page.inspectionStatus === 'INSPECTED' || page.status === 200)
+                              ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/20'
+                              : 'bg-rose-50 dark:bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-200 dark:border-rose-500/20'
+                          }`}>
+                            {page.inspectionStatus || `HTTP ${page.status}`}
+                          </span>
+                        </div>
                       </div>
                     ))}
                   </div>
