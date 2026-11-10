@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ReconciliationChain, ReconciliationStatus } from '../lib/types';
+import { ReconciliationChain } from '../lib/types';
 import { StatusBadge } from './StatusBadge';
 import { formatMoney } from '../lib/money';
-import { Search, Check, RotateCcw, AlertTriangle, Eye, HelpCircle } from 'lucide-react';
+import { Search, Check, RotateCcw, Eye, HelpCircle } from 'lucide-react';
 
 interface LedgerTableProps {
   chains: ReconciliationChain[];
@@ -55,17 +55,17 @@ export const LedgerTable: React.FC<LedgerTableProps> = ({
       {/* Top Ledger Bar: Segmented Tabs + Search */}
       <div
         style={{
-          padding: '12px 16px',
+          padding: '14px 18px',
           background: 'var(--bg-subtle)',
           borderBottom: '1px solid var(--border)',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
           flexWrap: 'wrap',
-          gap: '10px',
+          gap: '12px',
         }}
       >
-        <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
           <button
             className={`btn btn-sm ${filterTab === 'all' ? 'btn-primary' : 'btn-ghost'}`}
             onClick={() => setFilterTab('all')}
@@ -100,14 +100,14 @@ export const LedgerTable: React.FC<LedgerTableProps> = ({
 
         {/* Search Field */}
         <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-          <Search size={13} style={{ position: 'absolute', left: '10px', color: 'var(--text-tertiary)' }} />
+          <Search size={14} style={{ position: 'absolute', left: '12px', color: 'var(--text-tertiary)' }} />
           <input
             type="text"
             placeholder="Search invoice, UTR, client..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             className="btn btn-sm"
-            style={{ width: '220px', paddingLeft: '28px', textAlign: 'left', background: 'var(--surface)' }}
+            style={{ width: '240px', paddingLeft: '32px', textAlign: 'left', background: 'var(--surface)', fontSize: '12.5px' }}
           />
         </div>
       </div>
@@ -117,19 +117,19 @@ export const LedgerTable: React.FC<LedgerTableProps> = ({
         <table className="clean-table">
           <thead>
             <tr>
-              <th style={{ width: '150px' }}>Status</th>
+              <th style={{ width: '160px' }}>Status</th>
               <th>Counterparty / Client</th>
               <th>Invoice Ref</th>
               <th style={{ textAlign: 'right' }}>Invoice Gross</th>
               <th style={{ textAlign: 'right' }}>Bank Credit (INR)</th>
               <th>Difference Analysis</th>
-              <th style={{ width: '110px', textAlign: 'center' }}>Action</th>
+              <th style={{ width: '120px', textAlign: 'center' }}>Action</th>
             </tr>
           </thead>
           <tbody>
             {filteredChains.length === 0 ? (
               <tr>
-                <td colSpan={7} style={{ padding: '36px', textAlign: 'center', color: 'var(--text-tertiary)' }}>
+                <td colSpan={7} style={{ padding: '44px 20px', textAlign: 'center', color: 'var(--text-secondary)', fontSize: '14px' }}>
                   No records matching the selected criteria.
                 </td>
               </tr>
@@ -143,16 +143,16 @@ export const LedgerTable: React.FC<LedgerTableProps> = ({
                     style={{
                       background: isSelected ? 'var(--surface-hover)' : 'transparent',
                       cursor: 'pointer',
-                      borderLeft: isSelected ? '3px solid var(--accent)' : '3px solid transparent',
+                      borderLeft: isSelected ? '4px solid var(--accent)' : '4px solid transparent',
                     }}
                   >
                     <td>
                       <StatusBadge status={c.status} />
                     </td>
-                    <td style={{ fontWeight: 550, color: 'var(--text-primary)' }}>
-                      {c.invoice?.clientName || c.bankCredit?.narration.slice(0, 24) || 'Unknown Sender'}
+                    <td style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '14px' }}>
+                      {c.invoice?.clientName || c.bankCredit?.narration.slice(0, 26) || 'Unknown Sender'}
                     </td>
-                    <td style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                    <td style={{ fontFamily: 'var(--font-mono)', fontSize: '12.5px', color: 'var(--text-secondary)' }}>
                       {c.invoice?.invoiceNumber || '—'}
                     </td>
                     <td style={{ textAlign: 'right' }} className="amt">
@@ -162,7 +162,7 @@ export const LedgerTable: React.FC<LedgerTableProps> = ({
                           {formatMoney(c.invoice.amount.minorUnits, c.invoice.currency).replace(/^[A-Z]+\s+/, '')}
                         </>
                       ) : (
-                        <span style={{ color: 'var(--text-tertiary)', fontStyle: 'italic' }}>Not provided</span>
+                        <span style={{ color: 'var(--text-tertiary)', fontStyle: 'italic', fontWeight: 400 }}>Not provided</span>
                       )}
                     </td>
                     <td style={{ textAlign: 'right' }} className="amt pos">
@@ -172,7 +172,7 @@ export const LedgerTable: React.FC<LedgerTableProps> = ({
                           {formatMoney(c.bankCredit.creditAmountINR.minorUnits, 'INR').replace(/^[A-Z]+\s+/, '')}
                         </>
                       ) : (
-                        <span style={{ color: 'var(--text-tertiary)', fontStyle: 'italic' }}>Pending credit</span>
+                        <span style={{ color: 'var(--text-tertiary)', fontStyle: 'italic', fontWeight: 400 }}>Pending credit</span>
                       )}
                     </td>
                     <td>
@@ -185,7 +185,7 @@ export const LedgerTable: React.FC<LedgerTableProps> = ({
                           {c.documentedDifferences.length} Fee(s) itemized
                         </span>
                       ) : (
-                        <span style={{ fontSize: '11px', color: 'var(--text-tertiary)' }}>Clean Match</span>
+                        <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Clean Match</span>
                       )}
                     </td>
                     <td style={{ textAlign: 'center' }}>
@@ -196,7 +196,7 @@ export const LedgerTable: React.FC<LedgerTableProps> = ({
                             onClick={() => onUnlinkChain(c.id)}
                             title="Unlink"
                           >
-                            <RotateCcw size={12} />
+                            <RotateCcw size={13} />
                             <span>Unlink</span>
                           </button>
                         ) : c.status === 'suggested' || c.status === 'documented_difference' ? (
@@ -205,7 +205,7 @@ export const LedgerTable: React.FC<LedgerTableProps> = ({
                             onClick={() => onConfirmChain(c.id)}
                             title="Confirm this match"
                           >
-                            <Check size={12} />
+                            <Check size={13} strokeWidth={2.5} />
                             <span>Confirm</span>
                           </button>
                         ) : c.status === 'unexplained_difference' ? (
@@ -214,21 +214,21 @@ export const LedgerTable: React.FC<LedgerTableProps> = ({
                             onClick={() => onSelectChain(c.id)}
                             title="Inspect unexplained gap"
                           >
-                            <HelpCircle size={12} />
+                            <HelpCircle size={13} />
                             <span>Inspect</span>
                           </button>
                         ) : c.status === 'duplicate_suspected' || c.status === 'needs_review' ? (
                           <button
                             className="btn btn-sm"
-                            style={{ borderColor: 'var(--border-focus)', color: 'var(--text-primary)' }}
+                            style={{ borderColor: 'var(--border-strong)', color: 'var(--text-primary)' }}
                             onClick={() => onSelectChain(c.id)}
                             title="Review record"
                           >
-                            <Eye size={12} />
+                            <Eye size={13} />
                             <span>Review</span>
                           </button>
                         ) : (
-                          <span style={{ fontSize: '11px', color: 'var(--text-tertiary)', fontStyle: 'italic' }}>
+                          <span style={{ fontSize: '12px', color: 'var(--text-tertiary)', fontStyle: 'italic' }}>
                             Unmatched
                           </span>
                         )}

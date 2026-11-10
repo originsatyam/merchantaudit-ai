@@ -3,71 +3,75 @@
 @tailwind utilities;
 
 /* ==========================================================================
-   REMITLENS DESIGN SYSTEM (Complete Obsidian / Linear / Supabase Edition)
-   Strictly aligned with RemitLens PRD v0.1, Linear minimalism, Apple fluid motion
+   REMITLENS HIGH-CONTRAST DESIGN SYSTEM (WCAG AA/AAA Aligned)
+   Linear Minimalism + Supabase Precision + Apple Fluid Dynamics
+   Optimized for effortless readability, crystal-clear contrast & financial density
    ========================================================================== */
 
 :root {
-  /* Dark mode default (Linear / Obsidian Terminal) */
-  --bg: #090a0c;
-  --bg-subtle: #0f1013;
-  --surface: #14161a;
-  --surface-hover: #1a1c22;
-  --surface-active: #22252d;
-  --border: rgba(255, 255, 255, 0.08);
-  --border-focus: rgba(255, 255, 255, 0.22);
-  --border-subtle: rgba(255, 255, 255, 0.04);
+  /* Dark Mode Default (Obsidian / High-Contrast Slate) */
+  --bg: #090b0e;
+  --bg-subtle: #0f1217;
+  --surface: #151921;
+  --surface-hover: #1c222e;
+  --surface-active: #242b3a;
+  
+  /* Crisp Hairline Borders */
+  --border: rgba(255, 255, 255, 0.12);
+  --border-strong: rgba(255, 255, 255, 0.20);
+  --border-focus: rgba(255, 255, 255, 0.35);
+  --border-subtle: rgba(255, 255, 255, 0.06);
 
-  /* Typography */
-  --text-primary: #f2f3f5;
-  --text-secondary: #90939e;
-  --text-tertiary: #5d606c;
+  /* High-Contrast Typography (Dark) */
+  --text-primary: #f8fafc;     /* Crisp White (18:1 contrast on surface) */
+  --text-secondary: #cbd5e1;   /* Slate 300 (10:1 contrast, effortless reading) */
+  --text-tertiary: #94a3b8;    /* Slate 400 (5.8:1 contrast, WCAG AA verified) */
   --text-on-accent: #ffffff;
 
   /* Brand Accent */
-  --accent: #5e6ad2;
-  --accent-hover: #6d79e6;
-  --accent-subtle: rgba(94, 106, 210, 0.12);
-  --accent-border: rgba(94, 106, 210, 0.3);
+  --accent: #6366f1;
+  --accent-hover: #818cf8;
+  --accent-subtle: rgba(99, 102, 241, 0.16);
+  --accent-border: rgba(99, 102, 241, 0.40);
 
-  /* Finite 8 Canonical Statuses (Lucide Palette) */
-  --status-confirmed-text: #34d399;
-  --status-confirmed-bg: rgba(52, 211, 153, 0.09);
-  --status-confirmed-border: rgba(52, 211, 153, 0.24);
+  /* Finite 8 Canonical Statuses (High-Vibrancy Dark Palette) */
+  --status-confirmed-text: #4ade80;
+  --status-confirmed-bg: rgba(34, 197, 94, 0.15);
+  --status-confirmed-border: rgba(34, 197, 94, 0.40);
 
-  --status-suggested-text: #818cf8;
-  --status-suggested-bg: rgba(129, 140, 248, 0.09);
-  --status-suggested-border: rgba(129, 140, 248, 0.35);
+  --status-suggested-text: #a5b4fc;
+  --status-suggested-bg: rgba(99, 102, 241, 0.15);
+  --status-suggested-border: rgba(99, 102, 241, 0.45);
 
-  --status-partial-text: #2dd4bf;
-  --status-partial-bg: rgba(45, 212, 191, 0.09);
-  --status-partial-border: rgba(45, 212, 191, 0.25);
+  --status-partial-text: #5eead4;
+  --status-partial-bg: rgba(20, 184, 166, 0.15);
+  --status-partial-border: rgba(20, 184, 166, 0.40);
 
-  --status-review-text: #fbbf24;
-  --status-review-bg: rgba(251, 191, 36, 0.09);
-  --status-review-border: rgba(251, 191, 36, 0.25);
+  --status-review-text: #fcd34d;
+  --status-review-bg: rgba(245, 158, 11, 0.15);
+  --status-review-border: rgba(245, 158, 11, 0.45);
 
-  --status-duplicate-text: #c084fc;
-  --status-duplicate-bg: rgba(192, 132, 252, 0.09);
-  --status-duplicate-border: rgba(192, 132, 252, 0.25);
+  --status-duplicate-text: #d8b4fe;
+  --status-duplicate-bg: rgba(168, 85, 247, 0.15);
+  --status-duplicate-border: rgba(168, 85, 247, 0.40);
 
-  --status-unmatched-text: #9ca3af;
-  --status-unmatched-bg: rgba(156, 163, 175, 0.07);
-  --status-unmatched-border: rgba(156, 163, 175, 0.18);
+  --status-unmatched-text: #cbd5e1;
+  --status-unmatched-bg: rgba(148, 163, 184, 0.12);
+  --status-unmatched-border: rgba(148, 163, 184, 0.30);
 
-  --status-documented-text: #38bdf8;
-  --status-documented-bg: rgba(56, 189, 248, 0.09);
-  --status-documented-border: rgba(56, 189, 248, 0.25);
+  --status-documented-text: #7dd3fc;
+  --status-documented-bg: rgba(14, 165, 233, 0.15);
+  --status-documented-border: rgba(14, 165, 233, 0.40);
 
-  --status-unexplained-text: #fb7185;
-  --status-unexplained-bg: rgba(251, 113, 133, 0.09);
-  --status-unexplained-border: rgba(251, 113, 133, 0.25);
+  --status-unexplained-text: #fda4af;
+  --status-unexplained-bg: rgba(244, 63, 94, 0.16);
+  --status-unexplained-border: rgba(244, 63, 94, 0.45);
 
   /* Geometry */
-  --radius-xs: 5px;
-  --radius-sm: 7px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
   --radius-pill: 9999px;
 
   /* Fonts */
@@ -75,74 +79,83 @@
   --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
 
   /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 16px -2px rgba(0, 0, 0, 0.5), 0 2px 6px -1px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 16px 36px -4px rgba(0, 0, 0, 0.6), 0 4px 12px -2px rgba(0, 0, 0, 0.4);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 20px -2px rgba(0, 0, 0, 0.6), 0 2px 8px -1px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 18px 40px -4px rgba(0, 0, 0, 0.7), 0 6px 16px -2px rgba(0, 0, 0, 0.5);
 
-  /* Motion */
+  /* Apple Fluid Motion */
   --ease-apple: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.15);
   --dur-fast: 120ms;
   --dur-base: 220ms;
-  --dur-slow: 380ms;
 }
 
-/* Light Theme (Clean Supabase / Apple Pro Light) */
-[data-theme="light"] {
-  --bg: #fbfbfd;
-  --bg-subtle: #f5f5f7;
-  --surface: #ffffff;
-  --surface-hover: #f8f8fa;
-  --surface-active: #ececf0;
-  --border: rgba(0, 0, 0, 0.07);
-  --border-focus: rgba(0, 0, 0, 0.22);
-  --border-subtle: rgba(0, 0, 0, 0.03);
+/* ==========================================================================
+   LIGHT THEME (Clean Supabase Studio / Apple Pro White)
+   No washed-out text, distinct borders & deep color contrast
+   ========================================================================== */
 
-  --text-primary: #111215;
-  --text-secondary: #636672;
-  --text-tertiary: #9295a2;
+[data-theme="light"] {
+  --bg: #f8fafc;
+  --bg-subtle: #f1f5f9;
+  --surface: #ffffff;
+  --surface-hover: #f1f5f9;
+  --surface-active: #e2e8f0;
+
+  /* Clean Hairline Borders */
+  --border: #cbd5e1;
+  --border-strong: #94a3b8;
+  --border-focus: #475569;
+  --border-subtle: #e2e8f0;
+
+  /* High-Contrast Typography (Light) */
+  --text-primary: #0f172a;     /* Slate 900 (16:1 contrast) */
+  --text-secondary: #334155;   /* Slate 700 (9.5:1 contrast) */
+  --text-tertiary: #64748b;    /* Slate 500 (4.6:1 contrast, WCAG AA compliant) */
   --text-on-accent: #ffffff;
 
-  --accent: #4f52e2;
-  --accent-hover: #4346cc;
-  --accent-subtle: rgba(79, 82, 226, 0.08);
-  --accent-border: rgba(79, 82, 226, 0.25);
+  /* Brand Accent */
+  --accent: #4f46e5;
+  --accent-hover: #4338ca;
+  --accent-subtle: rgba(79, 70, 229, 0.10);
+  --accent-border: rgba(79, 70, 229, 0.35);
 
-  --status-confirmed-text: #059669;
-  --status-confirmed-bg: rgba(5, 150, 105, 0.08);
-  --status-confirmed-border: rgba(5, 150, 105, 0.25);
+  /* Finite 8 Canonical Statuses (High-Legibility Light Palette) */
+  --status-confirmed-text: #15803d;   /* Green 700 */
+  --status-confirmed-bg: #dcfce7;     /* Green 100 */
+  --status-confirmed-border: #86efac; /* Green 300 */
 
-  --status-suggested-text: #4f46e5;
-  --status-suggested-bg: rgba(79, 70, 229, 0.08);
-  --status-suggested-border: rgba(79, 70, 229, 0.3);
+  --status-suggested-text: #4338ca;   /* Indigo 700 */
+  --status-suggested-bg: #e0e7ff;     /* Indigo 100 */
+  --status-suggested-border: #a5b4fc; /* Indigo 300 */
 
-  --status-partial-text: #0d9488;
-  --status-partial-bg: rgba(13, 148, 136, 0.08);
-  --status-partial-border: rgba(13, 148, 136, 0.25);
+  --status-partial-text: #0f766e;     /* Teal 700 */
+  --status-partial-bg: #ccfbf1;       /* Teal 100 */
+  --status-partial-border: #5eead4;   /* Teal 300 */
 
-  --status-review-text: #d97706;
-  --status-review-bg: rgba(217, 119, 6, 0.08);
-  --status-review-border: rgba(217, 119, 6, 0.25);
+  --status-review-text: #b45309;      /* Amber 700 */
+  --status-review-bg: #fef3c7;        /* Amber 100 */
+  --status-review-border: #fcd34d;    /* Amber 300 */
 
-  --status-duplicate-text: #7c3aed;
-  --status-duplicate-bg: rgba(124, 58, 237, 0.08);
-  --status-duplicate-border: rgba(124, 58, 237, 0.25);
+  --status-duplicate-text: #7e22ce;   /* Purple 700 */
+  --status-duplicate-bg: #f3e8ff;     /* Purple 100 */
+  --status-duplicate-border: #d8b4fe; /* Purple 300 */
 
-  --status-unmatched-text: #4b5563;
-  --status-unmatched-bg: rgba(75, 85, 99, 0.06);
-  --status-unmatched-border: rgba(75, 85, 99, 0.2);
+  --status-unmatched-text: #475569;   /* Slate 600 */
+  --status-unmatched-bg: #f1f5f9;     /* Slate 100 */
+  --status-unmatched-border: #cbd5e1; /* Slate 300 */
 
-  --status-documented-text: #0284c7;
-  --status-documented-bg: rgba(2, 132, 199, 0.08);
-  --status-documented-border: rgba(2, 132, 199, 0.25);
+  --status-documented-text: #0369a1;  /* Sky 700 */
+  --status-documented-bg: #e0f2fe;    /* Sky 100 */
+  --status-documented-border: #7dd3fc;/* Sky 300 */
 
-  --status-unexplained-text: #e11d48;
-  --status-unexplained-bg: rgba(225, 29, 72, 0.08);
-  --status-unexplained-border: rgba(225, 29, 72, 0.25);
+  --status-unexplained-text: #be123c; /* Rose 700 */
+  --status-unexplained-bg: #ffe4e6;   /* Rose 100 */
+  --status-unexplained-border: #fda4af;/* Rose 300 */
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 4px 16px -2px rgba(0, 0, 0, 0.06), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
-  --shadow-lg: 0 16px 36px -4px rgba(0, 0, 0, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 16px -2px rgba(0, 0, 0, 0.10), 0 2px 6px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 16px 36px -4px rgba(0, 0, 0, 0.12), 0 4px 12px -2px rgba(0, 0, 0, 0.08);
 }
 
 /* Global Reset */
@@ -154,6 +167,7 @@ body {
   background-color: var(--bg);
   color: var(--text-primary);
   font-family: var(--font-sans);
+  font-size: 14px;
   line-height: 1.5;
   letter-spacing: -0.012em;
   -webkit-font-smoothing: antialiased;
@@ -161,7 +175,7 @@ body {
   min-height: 100vh;
   margin: 0;
   padding: 0;
-  transition: background-color var(--dur-base) var(--ease-apple);
+  transition: background-color var(--dur-base) var(--ease-apple), color var(--dur-base) var(--ease-apple);
 }
 
 /* ==========================================================================
@@ -172,8 +186,8 @@ body {
   position: sticky;
   top: 0;
   z-index: 100;
-  height: 54px;
-  background: rgba(9, 10, 12, 0.85);
+  height: 56px;
+  background: rgba(9, 11, 14, 0.88);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-bottom: 1px solid var(--border);
@@ -182,28 +196,28 @@ body {
   justify-content: space-between;
   padding: 0 24px;
   gap: 16px;
-  transition: background var(--dur-base) var(--ease-apple);
+  transition: background var(--dur-base) var(--ease-apple), border-color var(--dur-base) var(--ease-apple);
 }
 
 [data-theme="light"] .header {
-  background: rgba(251, 251, 253, 0.88);
+  background: rgba(248, 250, 252, 0.90);
 }
 
 .brand {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-weight: 600;
-  font-size: 14.5px;
+  font-weight: 650;
+  font-size: 15px;
   letter-spacing: -0.02em;
   flex-shrink: 0;
   user-select: none;
 }
 
 .brand-icon {
-  width: 24px;
-  height: 24px;
-  border-radius: 7px;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
   background: var(--text-primary);
   color: var(--bg);
   display: flex;
@@ -213,17 +227,18 @@ body {
 }
 
 .brand:hover .brand-icon {
-  transform: rotate(-6deg) scale(1.06);
+  transform: rotate(-6deg) scale(1.08);
 }
 
 .version-tag {
-  font-size: 10.5px;
+  font-size: 11px;
   color: var(--text-tertiary);
   border: 1px solid var(--border);
-  padding: 1px 6px;
+  padding: 1.5px 7px;
   border-radius: var(--radius-pill);
-  font-weight: 500;
+  font-weight: 550;
   font-family: var(--font-mono);
+  background: var(--bg-subtle);
 }
 
 /* Linear-style Segmented View Tabs */
@@ -243,22 +258,22 @@ body {
   background: transparent;
   border: 1px solid transparent;
   color: var(--text-secondary);
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 500;
   font-family: inherit;
-  padding: 5px 12px;
+  padding: 6px 13px;
   border-radius: var(--radius-sm);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
   white-space: nowrap;
   transition: all var(--dur-fast) var(--ease-apple);
 }
 
 .view-tab:hover {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--surface-hover);
 }
 
 .view-tab:active {
@@ -268,15 +283,15 @@ body {
 .view-tab.active {
   background: var(--surface);
   color: var(--text-primary);
-  border-color: var(--border);
+  border-color: var(--border-strong);
   box-shadow: var(--shadow-sm);
-  font-weight: 550;
+  font-weight: 600;
 }
 
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   flex-shrink: 0;
 }
 
@@ -286,14 +301,14 @@ body {
 
 .btn {
   font-family: inherit;
-  font-size: 12.5px;
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 550;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 0 12px;
-  height: 30px;
+  padding: 0 14px;
+  height: 32px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
   background: var(--surface);
@@ -307,7 +322,7 @@ body {
 
 .btn:hover {
   background: var(--surface-hover);
-  border-color: var(--border-focus);
+  border-color: var(--border-strong);
   transform: translateY(-1px);
 }
 
@@ -319,21 +334,27 @@ body {
   background: var(--text-primary);
   color: var(--bg);
   border-color: var(--text-primary);
-  font-weight: 600;
+  font-weight: 650;
 }
 
 .btn-primary:hover {
   background: #ffffff;
   border-color: #ffffff;
-  color: #000;
-  box-shadow: 0 0 16px rgba(255, 255, 255, 0.18);
+  color: #000000;
+  box-shadow: 0 0 16px rgba(255, 255, 255, 0.22);
+}
+
+[data-theme="light"] .btn-primary {
+  background: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
 }
 
 [data-theme="light"] .btn-primary:hover {
-  background: #000000;
-  border-color: #000000;
-  color: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  background: #1e293b;
+  border-color: #1e293b;
+  color: #ffffff;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.25);
 }
 
 .btn-ghost {
@@ -344,7 +365,7 @@ body {
 
 .btn-ghost:hover {
   background: var(--surface-hover);
-  border-color: transparent;
+  border-color: var(--border);
   color: var(--text-primary);
 }
 
@@ -352,17 +373,18 @@ body {
   background: var(--status-unexplained-bg);
   color: var(--status-unexplained-text);
   border-color: var(--status-unexplained-border);
+  font-weight: 600;
 }
 
 .btn-danger:hover {
-  background: rgba(251, 113, 133, 0.18);
+  background: rgba(244, 63, 94, 0.25);
   border-color: var(--status-unexplained-text);
 }
 
 .btn-sm {
-  height: 26px;
-  padding: 0 9px;
-  font-size: 11.5px;
+  height: 28px;
+  padding: 0 10px;
+  font-size: 12px;
 }
 
 /* ==========================================================================
@@ -378,7 +400,7 @@ body {
 }
 
 .card:hover {
-  border-color: var(--border-focus);
+  border-color: var(--border-strong);
 }
 
 /* 3-Way Reconciliation Chain Grid */
@@ -387,14 +409,14 @@ body {
   grid-template-columns: 1fr 36px 1fr 36px 1fr;
   align-items: stretch;
   gap: 0;
-  margin: 16px 0;
+  margin: 18px 0;
 }
 
 .recon-card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  padding: 16px;
+  padding: 18px 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -402,21 +424,21 @@ body {
 }
 
 .recon-card:hover {
-  border-color: var(--border-focus);
+  border-color: var(--border-strong);
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
 }
 
 .recon-label {
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 650;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-tertiary);
-  margin-bottom: 8px;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
 }
 
 .recon-arrow {
@@ -428,17 +450,17 @@ body {
 }
 
 /* ==========================================================================
-   STATUS BADGES (Official Lucide Indicators)
+   STATUS BADGES (Crisp, High-Vibrancy Indicators)
    ========================================================================== */
 
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 2px 8px;
+  gap: 6px;
+  padding: 3px 10px;
   border-radius: var(--radius-pill);
-  font-size: 11.5px;
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 600;
   line-height: 1.4;
   white-space: nowrap;
   user-select: none;
@@ -446,8 +468,8 @@ body {
 }
 
 .badge svg {
-  width: 13px;
-  height: 13px;
+  width: 13.5px;
+  height: 13.5px;
   flex-shrink: 0;
 }
 
@@ -508,23 +530,24 @@ body {
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.02em;
   white-space: nowrap;
+  font-weight: 600;
 }
 
 .amt .cur {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-tertiary);
-  margin-right: 4px;
-  font-weight: 500;
+  margin-right: 5px;
+  font-weight: 550;
 }
 
 .amt.pos {
   color: var(--status-confirmed-text);
-  font-weight: 600;
+  font-weight: 650;
 }
 
 .amt.neg {
   color: var(--status-unexplained-text);
-  font-weight: 600;
+  font-weight: 650;
 }
 
 .src-chip {
@@ -532,11 +555,11 @@ body {
   align-items: center;
   gap: 5px;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 11.5px;
   color: var(--text-secondary);
   background: var(--bg-subtle);
   border: 1px solid var(--border);
-  padding: 2px 6px;
+  padding: 3px 8px;
   border-radius: var(--radius-xs);
   cursor: pointer;
   transition: all var(--dur-fast) var(--ease-apple);
@@ -544,12 +567,12 @@ body {
 
 .src-chip:hover {
   color: var(--text-primary);
-  border-color: var(--border-focus);
+  border-color: var(--border-strong);
   transform: translateY(-1px);
 }
 
 /* ==========================================================================
-   TABLES (Linear Minimal Ledger)
+   TABLES (Linear Minimal Ledger - High Legibility)
    ========================================================================== */
 
 .table-container {
@@ -563,23 +586,23 @@ table.clean-table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
-  font-size: 13px;
+  font-size: 13.5px;
 }
 
 table.clean-table th {
-  padding: 10px 14px;
-  font-size: 11px;
-  font-weight: 600;
+  padding: 12px 16px;
+  font-size: 11.5px;
+  font-weight: 650;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-tertiary);
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
   background: var(--bg-subtle);
   border-bottom: 1px solid var(--border);
   white-space: nowrap;
 }
 
 table.clean-table td {
-  padding: 12px 14px;
+  padding: 14px 16px;
   border-bottom: 1px solid var(--border-subtle);
   color: var(--text-primary);
   vertical-align: middle;
@@ -623,7 +646,7 @@ table.clean-table tr:hover td {
 @media (max-width: 900px) {
   .header {
     height: auto;
-    padding: 10px 16px;
+    padding: 12px 16px;
     flex-wrap: wrap;
   }
   .view-tabs {
@@ -638,6 +661,6 @@ table.clean-table tr:hover td {
   }
   .recon-arrow {
     transform: rotate(90deg);
-    padding: 4px 0;
+    padding: 6px 0;
   }
 }
