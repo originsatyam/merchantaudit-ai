@@ -52,10 +52,10 @@ export const ReconciliationChainView: React.FC<ReconciliationChainViewProps> = (
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px', flexWrap: 'wrap', gap: '10px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
           <StatusBadge status={status} />
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '14px', fontWeight: 650, color: 'var(--text-primary)' }}>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)', letterSpacing: 0 }}>
             {chainReference}
           </span>
-          <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>
+          <span style={{ fontSize: '13px', color: 'var(--text-secondary)', letterSpacing: 0 }}>
             · Match Confidence: <strong style={{ color: 'var(--text-primary)' }}>{overallConfidence}%</strong>
           </span>
         </div>
@@ -73,7 +73,7 @@ export const ReconciliationChainView: React.FC<ReconciliationChainViewProps> = (
             </button>
           ) : (
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <span style={{ fontSize: '12.5px', fontWeight: 600, color: 'var(--status-confirmed-text)', display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <span style={{ fontSize: '12.5px', fontWeight: 550, color: 'var(--status-confirmed-text)', display: 'flex', alignItems: 'center', gap: '5px' }}>
                 <ShieldCheck size={15} /> Confirmed by {confirmedBy}
               </span>
               <button
@@ -107,17 +107,17 @@ export const ReconciliationChainView: React.FC<ReconciliationChainViewProps> = (
           <div>
             <div className="recon-label">
               <FileText size={14} />
-              <span>1. Client Invoice</span>
+              <span>01. Client Invoice</span>
             </div>
             {invoice ? (
               <>
-                <div style={{ fontWeight: 650, fontSize: '15px', color: 'var(--text-primary)', marginBottom: '3px' }}>
+                <div style={{ fontWeight: 600, fontSize: '15px', color: 'var(--text-primary)', marginBottom: '3px', letterSpacing: 0 }}>
                   {invoice.clientName}
                 </div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '10px' }}>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '10px', letterSpacing: 0 }}>
                   {invoice.invoiceNumber}
                 </div>
-                <div className="amt" style={{ fontSize: '18px', fontWeight: 700 }}>
+                <div className="amt" style={{ fontSize: '18px', fontWeight: 650 }}>
                   <span className="cur">{invoice.currency}</span>
                   {formatMoney(invoice.amount.minorUnits, invoice.currency).replace(/^[A-Z]+\s+/, '')}
                 </div>
@@ -139,7 +139,7 @@ export const ReconciliationChainView: React.FC<ReconciliationChainViewProps> = (
 
         {/* Arrow 1 */}
         <div className="recon-arrow">
-          <ArrowRight size={18} strokeWidth={2.5} />
+          <ArrowRight size={18} strokeWidth={2} />
         </div>
 
         {/* Node 2: Provider Settlement */}
@@ -147,17 +147,17 @@ export const ReconciliationChainView: React.FC<ReconciliationChainViewProps> = (
           <div>
             <div className="recon-label">
               <CreditCard size={14} />
-              <span>2. Provider Settlement</span>
+              <span>02. Provider Settlement</span>
             </div>
             {settlement ? (
               <>
-                <div style={{ fontWeight: 650, fontSize: '15px', color: 'var(--text-primary)', marginBottom: '3px' }}>
+                <div style={{ fontWeight: 600, fontSize: '15px', color: 'var(--text-primary)', marginBottom: '3px', letterSpacing: 0 }}>
                   {settlement.provider} Payout
                 </div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '10px' }}>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '10px', letterSpacing: 0 }}>
                   {settlement.reference}
                 </div>
-                <div className="amt" style={{ fontSize: '18px', fontWeight: 700 }}>
+                <div className="amt" style={{ fontSize: '18px', fontWeight: 650 }}>
                   <span className="cur">{settlement.currency}</span>
                   {formatMoney(settlement.netSettlementAmount.minorUnits, settlement.currency).replace(/^[A-Z]+\s+/, '')}
                 </div>
@@ -187,7 +187,7 @@ export const ReconciliationChainView: React.FC<ReconciliationChainViewProps> = (
 
         {/* Arrow 2 */}
         <div className="recon-arrow">
-          <ArrowRight size={18} strokeWidth={2.5} />
+          <ArrowRight size={18} strokeWidth={2} />
         </div>
 
         {/* Node 3: Bank Credit */}
@@ -195,22 +195,22 @@ export const ReconciliationChainView: React.FC<ReconciliationChainViewProps> = (
           <div>
             <div className="recon-label">
               <Building2 size={14} />
-              <span>3. Indian Bank Credit</span>
+              <span>03. Indian Bank Credit</span>
             </div>
             {bankCredit ? (
               <>
-                <div style={{ fontWeight: 650, fontSize: '15px', color: 'var(--text-primary)', marginBottom: '3px' }}>
+                <div style={{ fontWeight: 600, fontSize: '15px', color: 'var(--text-primary)', marginBottom: '3px', letterSpacing: 0 }}>
                   Bank Current A/C
                 </div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '10px' }}>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '10px', letterSpacing: 0 }}>
                   UTR: {bankCredit.utrReference}
                 </div>
-                <div className="amt pos" style={{ fontSize: '18px', fontWeight: 700 }}>
+                <div className="amt pos" style={{ fontSize: '18px', fontWeight: 650 }}>
                   <span className="cur">INR</span>
                   {formatMoney(bankCredit.creditAmountINR.minorUnits, 'INR').replace(/^[A-Z]+\s+/, '')}
                 </div>
                 {impliedFxRate && (
-                  <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', marginTop: '4px' }}>
+                  <div style={{ fontSize: '12px', fontWeight: 550, color: 'var(--text-secondary)', marginTop: '4px', letterSpacing: 0 }}>
                     Implied FX: ₹{impliedFxRate}/{invoice?.currency || 'USD'}
                   </div>
                 )}
@@ -245,7 +245,7 @@ export const ReconciliationChainView: React.FC<ReconciliationChainViewProps> = (
         {/* Documented Deductions */}
         <div style={{ padding: '16px', background: 'var(--bg-subtle)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-            <span style={{ fontSize: '13px', fontWeight: 650, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px', letterSpacing: 0 }}>
               <Receipt size={14} style={{ color: 'var(--status-documented-text)' }} />
               Documented Deductions
             </span>
@@ -254,14 +254,14 @@ export const ReconciliationChainView: React.FC<ReconciliationChainViewProps> = (
           {documentedDifferences.length > 0 ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               {documentedDifferences.map((diff, idx) => (
-                <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
-                  <span style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>{diff.label}</span>
+                <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', letterSpacing: 0 }}>
+                  <span style={{ color: 'var(--text-secondary)', fontWeight: 450 }}>{diff.label}</span>
                   <span className="amt neg">{formatMoney(diff.amount.minorUnits, diff.amount.currency)}</span>
                 </div>
               ))}
             </div>
           ) : (
-            <div style={{ fontSize: '13px', color: 'var(--text-tertiary)' }}>No provider fees itemized in uploaded statement.</div>
+            <div style={{ fontSize: '13px', color: 'var(--text-tertiary)', letterSpacing: 0 }}>No provider fees itemized in uploaded statement.</div>
           )}
         </div>
 
@@ -275,7 +275,7 @@ export const ReconciliationChainView: React.FC<ReconciliationChainViewProps> = (
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-            <span style={{ fontSize: '13px', fontWeight: 650, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px', letterSpacing: 0 }}>
               <HelpCircle size={14} style={{ color: unexplainedDifferenceINR ? 'var(--status-unexplained-text)' : 'var(--text-tertiary)' }} />
               Unexplained Difference
             </span>
@@ -287,15 +287,15 @@ export const ReconciliationChainView: React.FC<ReconciliationChainViewProps> = (
           </div>
           {unexplainedDifferenceINR ? (
             <div>
-              <div className="amt neg" style={{ fontSize: '16px', fontWeight: 700, marginBottom: '4px' }}>
+              <div className="amt neg" style={{ fontSize: '16px', fontWeight: 650, marginBottom: '4px' }}>
                 INR {formatMoney(unexplainedDifferenceINR.minorUnits, 'INR')} Missing in Transit
               </div>
-              <div style={{ fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+              <div style={{ fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.5, letterSpacing: 0 }}>
                 Net bank credit is lower than expected after subtracting all documented provider fees. In accordance with PRD Rule #3, RemitLens never guesses intermediary correspondent bank deductions without file proof.
               </div>
             </div>
           ) : (
-            <div style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>
+            <div style={{ fontSize: '13px', color: 'var(--text-secondary)', letterSpacing: 0 }}>
               Net bank credit strictly accounts for all expected funds and stated fees.
             </div>
           )}
@@ -305,7 +305,7 @@ export const ReconciliationChainView: React.FC<ReconciliationChainViewProps> = (
       {/* Audit Evidence Trail */}
       {evidence.length > 0 && (
         <div style={{ marginTop: '16px', paddingTop: '14px', borderTop: '1px solid var(--border-subtle)' }}>
-          <div style={{ fontSize: '11.5px', color: 'var(--text-secondary)', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>
+          <div style={{ fontSize: '11.5px', color: 'var(--text-secondary)', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: 600 }}>
             Evidence trail:
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>

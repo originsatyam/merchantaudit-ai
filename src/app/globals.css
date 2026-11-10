@@ -3,69 +3,70 @@
 @tailwind utilities;
 
 /* ==========================================================================
-   REMITLENS HIGH-CONTRAST DESIGN SYSTEM (WCAG AA/AAA Aligned)
-   Linear Minimalism + Supabase Precision + Apple Fluid Dynamics
-   Optimized for effortless readability, crystal-clear contrast & financial density
+   REMITLENS DESIGN SYSTEM (Linear + Supabase + VoiceOS Aesthetic)
+   Zero letter-spacing for effortless reading, Apple fluid spring dynamics,
+   and precision dark/light obsidian financial density.
    ========================================================================== */
 
 :root {
-  /* Dark Mode Default (Obsidian / High-Contrast Slate) */
-  --bg: #090b0e;
-  --bg-subtle: #0f1217;
-  --surface: #151921;
-  --surface-hover: #1c222e;
-  --surface-active: #242b3a;
+  /* Dark Mode Default (Linear / Supabase Deep Obsidian) */
+  --bg: #0c0d11;
+  --bg-subtle: #12141a;
+  --surface: #161820;
+  --surface-hover: #1d202b;
+  --surface-active: #242836;
   
-  /* Crisp Hairline Borders */
-  --border: rgba(255, 255, 255, 0.12);
-  --border-strong: rgba(255, 255, 255, 0.20);
-  --border-focus: rgba(255, 255, 255, 0.35);
-  --border-subtle: rgba(255, 255, 255, 0.06);
+  /* Precision Hairline Borders */
+  --border: rgba(255, 255, 255, 0.10);
+  --border-strong: rgba(255, 255, 255, 0.18);
+  --border-focus: rgba(94, 106, 210, 0.60);
+  --border-subtle: rgba(255, 255, 255, 0.05);
 
-  /* High-Contrast Typography (Dark) */
-  --text-primary: #f8fafc;     /* Crisp White (18:1 contrast on surface) */
-  --text-secondary: #cbd5e1;   /* Slate 300 (10:1 contrast, effortless reading) */
-  --text-tertiary: #94a3b8;    /* Slate 400 (5.8:1 contrast, WCAG AA verified) */
+  /* High-Legibility Typography (Dark) - Zero Letter-Spacing */
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-tertiary: #94a3b8;
+  --text-muted: #64748b;
   --text-on-accent: #ffffff;
 
-  /* Brand Accent */
-  --accent: #6366f1;
-  --accent-hover: #818cf8;
-  --accent-subtle: rgba(99, 102, 241, 0.16);
-  --accent-border: rgba(99, 102, 241, 0.40);
+  /* Brand Accent (Linear Indigo) */
+  --accent: #5e6ad2;
+  --accent-hover: #6e7ae6;
+  --accent-subtle: rgba(94, 106, 210, 0.14);
+  --accent-border: rgba(94, 106, 210, 0.35);
 
-  /* Finite 8 Canonical Statuses (High-Vibrancy Dark Palette) */
-  --status-confirmed-text: #4ade80;
-  --status-confirmed-bg: rgba(34, 197, 94, 0.15);
-  --status-confirmed-border: rgba(34, 197, 94, 0.40);
+  /* Supabase & Linear Canonical Status Tints */
+  --status-confirmed-text: #3ecf8e;     /* Supabase Brand Emerald */
+  --status-confirmed-bg: rgba(62, 207, 142, 0.12);
+  --status-confirmed-border: rgba(62, 207, 142, 0.35);
 
-  --status-suggested-text: #a5b4fc;
-  --status-suggested-bg: rgba(99, 102, 241, 0.15);
-  --status-suggested-border: rgba(99, 102, 241, 0.45);
+  --status-suggested-text: #818cf8;     /* Linear Brand Violet */
+  --status-suggested-bg: rgba(129, 140, 248, 0.12);
+  --status-suggested-border: rgba(129, 140, 248, 0.40);
 
-  --status-partial-text: #5eead4;
-  --status-partial-bg: rgba(20, 184, 166, 0.15);
-  --status-partial-border: rgba(20, 184, 166, 0.40);
+  --status-partial-text: #2dd4bf;       /* Clean Teal */
+  --status-partial-bg: rgba(45, 212, 191, 0.12);
+  --status-partial-border: rgba(45, 212, 191, 0.35);
 
-  --status-review-text: #fcd34d;
-  --status-review-bg: rgba(245, 158, 11, 0.15);
-  --status-review-border: rgba(245, 158, 11, 0.45);
+  --status-review-text: #fbbf24;        /* Warm Amber */
+  --status-review-bg: rgba(251, 191, 36, 0.12);
+  --status-review-border: rgba(251, 191, 36, 0.40);
 
-  --status-duplicate-text: #d8b4fe;
-  --status-duplicate-bg: rgba(168, 85, 247, 0.15);
-  --status-duplicate-border: rgba(168, 85, 247, 0.40);
+  --status-duplicate-text: #c084fc;     /* Modern Purple */
+  --status-duplicate-bg: rgba(192, 132, 252, 0.12);
+  --status-duplicate-border: rgba(192, 132, 252, 0.35);
 
-  --status-unmatched-text: #cbd5e1;
-  --status-unmatched-bg: rgba(148, 163, 184, 0.12);
-  --status-unmatched-border: rgba(148, 163, 184, 0.30);
+  --status-unmatched-text: #cbd5e1;     /* Slate Neutral */
+  --status-unmatched-bg: rgba(148, 163, 184, 0.10);
+  --status-unmatched-border: rgba(148, 163, 184, 0.25);
 
-  --status-documented-text: #7dd3fc;
-  --status-documented-bg: rgba(14, 165, 233, 0.15);
-  --status-documented-border: rgba(14, 165, 233, 0.40);
+  --status-documented-text: #38bdf8;    /* Sky Blue */
+  --status-documented-bg: rgba(56, 189, 248, 0.12);
+  --status-documented-border: rgba(56, 189, 248, 0.35);
 
-  --status-unexplained-text: #fda4af;
-  --status-unexplained-bg: rgba(244, 63, 94, 0.16);
-  --status-unexplained-border: rgba(244, 63, 94, 0.45);
+  --status-unexplained-text: #fb7185;   /* Rose Red */
+  --status-unexplained-bg: rgba(251, 113, 133, 0.14);
+  --status-unexplained-border: rgba(251, 113, 133, 0.40);
 
   /* Geometry */
   --radius-xs: 6px;
@@ -78,84 +79,88 @@
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
 
-  /* Shadows */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
-  --shadow-md: 0 4px 20px -2px rgba(0, 0, 0, 0.6), 0 2px 8px -1px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 18px 40px -4px rgba(0, 0, 0, 0.7), 0 6px 16px -2px rgba(0, 0, 0, 0.5);
+  /* Shadows (Apple Diffused Glow) */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 16px -2px rgba(0, 0, 0, 0.5), 0 2px 6px -1px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 16px 36px -4px rgba(0, 0, 0, 0.6), 0 4px 12px -2px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 24px rgba(94, 106, 210, 0.18);
 
-  /* Apple Fluid Motion */
+  /* Apple Fluid Motion Spring Curves */
   --ease-apple: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.15);
-  --dur-fast: 120ms;
-  --dur-base: 220ms;
+  --dur-fast: 140ms;
+  --dur-base: 240ms;
+  --dur-slow: 380ms;
 }
 
 /* ==========================================================================
-   LIGHT THEME (Clean Supabase Studio / Apple Pro White)
-   No washed-out text, distinct borders & deep color contrast
+   LIGHT THEME (VoiceOS / Supabase Studio Pure White)
+   Crisp contrasts, zero letter-spacing, soft diffused Apple shadows
    ========================================================================== */
 
 [data-theme="light"] {
   --bg: #f8fafc;
   --bg-subtle: #f1f5f9;
   --surface: #ffffff;
-  --surface-hover: #f1f5f9;
-  --surface-active: #e2e8f0;
+  --surface-hover: #f8fafc;
+  --surface-active: #edf2f7;
 
   /* Clean Hairline Borders */
-  --border: #cbd5e1;
-  --border-strong: #94a3b8;
-  --border-focus: #475569;
-  --border-subtle: #e2e8f0;
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --border-focus: rgba(79, 70, 229, 0.5);
+  --border-subtle: #f1f5f9;
 
   /* High-Contrast Typography (Light) */
-  --text-primary: #0f172a;     /* Slate 900 (16:1 contrast) */
-  --text-secondary: #334155;   /* Slate 700 (9.5:1 contrast) */
-  --text-tertiary: #64748b;    /* Slate 500 (4.6:1 contrast, WCAG AA compliant) */
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-tertiary: #64748b;
+  --text-muted: #94a3b8;
   --text-on-accent: #ffffff;
 
   /* Brand Accent */
   --accent: #4f46e5;
   --accent-hover: #4338ca;
-  --accent-subtle: rgba(79, 70, 229, 0.10);
-  --accent-border: rgba(79, 70, 229, 0.35);
+  --accent-subtle: rgba(79, 70, 229, 0.08);
+  --accent-border: rgba(79, 70, 229, 0.30);
 
-  /* Finite 8 Canonical Statuses (High-Legibility Light Palette) */
-  --status-confirmed-text: #15803d;   /* Green 700 */
-  --status-confirmed-bg: #dcfce7;     /* Green 100 */
-  --status-confirmed-border: #86efac; /* Green 300 */
+  /* Status Colors (Light Palette) */
+  --status-confirmed-text: #059669;
+  --status-confirmed-bg: #ecfdf5;
+  --status-confirmed-border: #a7f3d0;
 
-  --status-suggested-text: #4338ca;   /* Indigo 700 */
-  --status-suggested-bg: #e0e7ff;     /* Indigo 100 */
-  --status-suggested-border: #a5b4fc; /* Indigo 300 */
+  --status-suggested-text: #4f46e5;
+  --status-suggested-bg: #eef2ff;
+  --status-suggested-border: #c7d2fe;
 
-  --status-partial-text: #0f766e;     /* Teal 700 */
-  --status-partial-bg: #ccfbf1;       /* Teal 100 */
-  --status-partial-border: #5eead4;   /* Teal 300 */
+  --status-partial-text: #0d9488;
+  --status-partial-bg: #f0fdfa;
+  --status-partial-border: #99f6e4;
 
-  --status-review-text: #b45309;      /* Amber 700 */
-  --status-review-bg: #fef3c7;        /* Amber 100 */
-  --status-review-border: #fcd34d;    /* Amber 300 */
+  --status-review-text: #d97706;
+  --status-review-bg: #fffbeb;
+  --status-review-border: #fde68a;
 
-  --status-duplicate-text: #7e22ce;   /* Purple 700 */
-  --status-duplicate-bg: #f3e8ff;     /* Purple 100 */
-  --status-duplicate-border: #d8b4fe; /* Purple 300 */
+  --status-duplicate-text: #7c3aed;
+  --status-duplicate-bg: #faf5ff;
+  --status-duplicate-border: #ddd6fe;
 
-  --status-unmatched-text: #475569;   /* Slate 600 */
-  --status-unmatched-bg: #f1f5f9;     /* Slate 100 */
-  --status-unmatched-border: #cbd5e1; /* Slate 300 */
+  --status-unmatched-text: #475569;
+  --status-unmatched-bg: #f8fafc;
+  --status-unmatched-border: #cbd5e1;
 
-  --status-documented-text: #0369a1;  /* Sky 700 */
-  --status-documented-bg: #e0f2fe;    /* Sky 100 */
-  --status-documented-border: #7dd3fc;/* Sky 300 */
+  --status-documented-text: #0284c7;
+  --status-documented-bg: #f0f9ff;
+  --status-documented-border: #bae6fd;
 
-  --status-unexplained-text: #be123c; /* Rose 700 */
-  --status-unexplained-bg: #ffe4e6;   /* Rose 100 */
-  --status-unexplained-border: #fda4af;/* Rose 300 */
+  --status-unexplained-text: #e11d48;
+  --status-unexplained-bg: #fff1f2;
+  --status-unexplained-border: #fecdd3;
 
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
-  --shadow-md: 0 4px 16px -2px rgba(0, 0, 0, 0.10), 0 2px 6px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 16px 36px -4px rgba(0, 0, 0, 0.12), 0 4px 12px -2px rgba(0, 0, 0, 0.08);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 16px -2px rgba(0, 0, 0, 0.06), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 16px 36px -4px rgba(0, 0, 0, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.04);
+  --shadow-glow: 0 0 24px rgba(79, 70, 229, 0.12);
 }
 
 /* Global Reset */
@@ -168,8 +173,8 @@ body {
   color: var(--text-primary);
   font-family: var(--font-sans);
   font-size: 14px;
-  line-height: 1.5;
-  letter-spacing: -0.012em;
+  line-height: 1.55;
+  letter-spacing: 0 !important; /* Zero letter-spacing for effortless clarity */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
@@ -179,7 +184,7 @@ body {
 }
 
 /* ==========================================================================
-   NAVIGATION BAR (Glassmorphic Linear Header)
+   NAVIGATION BAR (Linear / VoiceOS Glassmorphic Header)
    ========================================================================== */
 
 .header {
@@ -187,37 +192,38 @@ body {
   top: 0;
   z-index: 100;
   height: 56px;
-  background: rgba(9, 11, 14, 0.88);
+  background: rgba(12, 13, 17, 0.85);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 24px;
+  padding: 0 28px;
   gap: 16px;
   transition: background var(--dur-base) var(--ease-apple), border-color var(--dur-base) var(--ease-apple);
 }
 
 [data-theme="light"] .header {
-  background: rgba(248, 250, 252, 0.90);
+  background: rgba(248, 250, 252, 0.88);
 }
 
 .brand {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-weight: 650;
+  font-weight: 600;
   font-size: 15px;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
   flex-shrink: 0;
   user-select: none;
+  cursor: pointer;
 }
 
 .brand-icon {
   width: 26px;
   height: 26px;
-  border-radius: 8px;
+  border-radius: 7px;
   background: var(--text-primary);
   color: var(--bg);
   display: flex;
@@ -236,9 +242,10 @@ body {
   border: 1px solid var(--border);
   padding: 1.5px 7px;
   border-radius: var(--radius-pill);
-  font-weight: 550;
+  font-weight: 500;
   font-family: var(--font-mono);
   background: var(--bg-subtle);
+  letter-spacing: 0;
 }
 
 /* Linear-style Segmented View Tabs */
@@ -261,14 +268,15 @@ body {
   font-size: 13px;
   font-weight: 500;
   font-family: inherit;
-  padding: 6px 13px;
+  letter-spacing: 0;
+  padding: 5px 14px;
   border-radius: var(--radius-sm);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 7px;
   white-space: nowrap;
-  transition: all var(--dur-fast) var(--ease-apple);
+  transition: color var(--dur-fast) var(--ease-apple), background-color var(--dur-fast) var(--ease-apple), transform var(--dur-fast) var(--ease-spring);
 }
 
 .view-tab:hover {
@@ -296,13 +304,14 @@ body {
 }
 
 /* ==========================================================================
-   BUTTONS (Apple Fluid Spring Curves)
+   BUTTONS (Apple Fluid Spring Curves & Hover Aura)
    ========================================================================== */
 
 .btn {
   font-family: inherit;
   font-size: 13px;
-  font-weight: 550;
+  font-weight: 500;
+  letter-spacing: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -316,7 +325,7 @@ body {
   cursor: pointer;
   white-space: nowrap;
   text-decoration: none;
-  transition: all var(--dur-fast) var(--ease-apple);
+  transition: transform var(--dur-fast) var(--ease-spring), background-color var(--dur-fast) var(--ease-apple), border-color var(--dur-fast) var(--ease-apple), box-shadow var(--dur-fast) var(--ease-apple);
   user-select: none;
 }
 
@@ -327,21 +336,21 @@ body {
 }
 
 .btn:active {
-  transform: scale(0.96) translateY(0);
+  transform: scale(0.965) translateY(0);
 }
 
 .btn-primary {
   background: var(--text-primary);
   color: var(--bg);
   border-color: var(--text-primary);
-  font-weight: 650;
+  font-weight: 600;
 }
 
 .btn-primary:hover {
   background: #ffffff;
   border-color: #ffffff;
   color: #000000;
-  box-shadow: 0 0 16px rgba(255, 255, 255, 0.22);
+  box-shadow: 0 0 18px rgba(255, 255, 255, 0.24);
 }
 
 [data-theme="light"] .btn-primary {
@@ -354,7 +363,7 @@ body {
   background: #1e293b;
   border-color: #1e293b;
   color: #ffffff;
-  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.25);
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.20);
 }
 
 .btn-ghost {
@@ -377,18 +386,18 @@ body {
 }
 
 .btn-danger:hover {
-  background: rgba(244, 63, 94, 0.25);
+  background: rgba(251, 113, 133, 0.22);
   border-color: var(--status-unexplained-text);
 }
 
 .btn-sm {
   height: 28px;
-  padding: 0 10px;
-  font-size: 12px;
+  padding: 0 11px;
+  font-size: 12.5px;
 }
 
 /* ==========================================================================
-   CARDS & CONTAINERS
+   CARDS & CONTAINERS (Supabase / Linear Clean Elevation)
    ========================================================================== */
 
 .card {
@@ -396,7 +405,7 @@ body {
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
-  transition: border-color var(--dur-base) var(--ease-apple), box-shadow var(--dur-base) var(--ease-apple);
+  transition: border-color var(--dur-base) var(--ease-apple), box-shadow var(--dur-base) var(--ease-apple), transform var(--dur-base) var(--ease-apple);
 }
 
 .card:hover {
@@ -406,7 +415,7 @@ body {
 /* 3-Way Reconciliation Chain Grid */
 .recon-chain {
   display: grid;
-  grid-template-columns: 1fr 36px 1fr 36px 1fr;
+  grid-template-columns: 1fr 40px 1fr 40px 1fr;
   align-items: stretch;
   gap: 0;
   margin: 18px 0;
@@ -416,11 +425,12 @@ body {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  padding: 18px 20px;
+  padding: 20px 22px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   transition: all var(--dur-base) var(--ease-apple);
+  position: relative;
 }
 
 .recon-card:hover {
@@ -430,12 +440,12 @@ body {
 }
 
 .recon-label {
-  font-size: 12px;
-  font-weight: 650;
+  font-size: 11.5px;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   color: var(--text-secondary);
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   display: flex;
   align-items: center;
   gap: 7px;
@@ -446,11 +456,11 @@ body {
   align-items: center;
   justify-content: center;
   color: var(--text-tertiary);
-  transition: transform var(--dur-fast) var(--ease-apple);
+  transition: transform var(--dur-fast) var(--ease-apple), color var(--dur-fast) var(--ease-apple);
 }
 
 /* ==========================================================================
-   STATUS BADGES (Crisp, High-Vibrancy Indicators)
+   STATUS BADGES (Linear-Style Pill with Soft Aura)
    ========================================================================== */
 
 .badge {
@@ -460,8 +470,9 @@ body {
   padding: 3px 10px;
   border-radius: var(--radius-pill);
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 550;
   line-height: 1.4;
+  letter-spacing: 0;
   white-space: nowrap;
   user-select: none;
   transition: all var(--dur-fast) var(--ease-apple);
@@ -528,7 +539,7 @@ body {
 .amt {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
-  letter-spacing: -0.02em;
+  letter-spacing: 0 !important;
   white-space: nowrap;
   font-weight: 600;
 }
@@ -537,17 +548,17 @@ body {
   font-size: 12px;
   color: var(--text-tertiary);
   margin-right: 5px;
-  font-weight: 550;
+  font-weight: 500;
 }
 
 .amt.pos {
   color: var(--status-confirmed-text);
-  font-weight: 650;
+  font-weight: 600;
 }
 
 .amt.neg {
   color: var(--status-unexplained-text);
-  font-weight: 650;
+  font-weight: 600;
 }
 
 .src-chip {
@@ -556,6 +567,7 @@ body {
   gap: 5px;
   font-family: var(--font-mono);
   font-size: 11.5px;
+  letter-spacing: 0;
   color: var(--text-secondary);
   background: var(--bg-subtle);
   border: 1px solid var(--border);
@@ -587,14 +599,15 @@ table.clean-table {
   border-collapse: collapse;
   text-align: left;
   font-size: 13.5px;
+  letter-spacing: 0;
 }
 
 table.clean-table th {
-  padding: 12px 16px;
+  padding: 12px 18px;
   font-size: 11.5px;
-  font-weight: 650;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   color: var(--text-secondary);
   background: var(--bg-subtle);
   border-bottom: 1px solid var(--border);
@@ -602,10 +615,11 @@ table.clean-table th {
 }
 
 table.clean-table td {
-  padding: 14px 16px;
+  padding: 14px 18px;
   border-bottom: 1px solid var(--border-subtle);
   color: var(--text-primary);
   vertical-align: middle;
+  letter-spacing: 0;
 }
 
 table.clean-table tr:last-child td {
@@ -613,7 +627,7 @@ table.clean-table tr:last-child td {
 }
 
 table.clean-table tr {
-  transition: background var(--dur-fast) var(--ease-apple);
+  transition: background-color var(--dur-fast) var(--ease-apple);
 }
 
 table.clean-table tr:hover td {
@@ -621,7 +635,7 @@ table.clean-table tr:hover td {
 }
 
 /* ==========================================================================
-   ANIMATIONS
+   ANIMATIONS & MOTION
    ========================================================================== */
 
 @keyframes fadeIn {
@@ -635,7 +649,7 @@ table.clean-table tr:hover td {
 }
 
 @keyframes modalIn {
-  from { opacity: 0; transform: scale(0.96) translateY(8px); }
+  from { opacity: 0; transform: scale(0.97) translateY(6px); }
   to { opacity: 1; transform: scale(1) translateY(0); }
 }
 

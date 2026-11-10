@@ -52,10 +52,10 @@ export const LedgerTable: React.FC<LedgerTableProps> = ({
 
   return (
     <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-      {/* Top Ledger Bar: Segmented Tabs + Search */}
+      {/* Top Ledger Bar: Linear Segmented Filter Tabs + Fast Search */}
       <div
         style={{
-          padding: '14px 18px',
+          padding: '12px 18px',
           background: 'var(--bg-subtle)',
           borderBottom: '1px solid var(--border)',
           display: 'flex',
@@ -65,40 +65,90 @@ export const LedgerTable: React.FC<LedgerTableProps> = ({
           gap: '12px',
         }}
       >
-        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', alignItems: 'center' }}>
           <button
             className={`btn btn-sm ${filterTab === 'all' ? 'btn-primary' : 'btn-ghost'}`}
             onClick={() => setFilterTab('all')}
+            style={{ borderRadius: 'var(--radius-pill)', gap: '6px' }}
           >
-            All Records ({chains.length})
+            <span>All</span>
+            <span style={{
+              fontSize: '11px',
+              padding: '1px 6px',
+              borderRadius: 'var(--radius-pill)',
+              background: filterTab === 'all' ? 'rgba(0,0,0,0.2)' : 'var(--border)',
+              fontWeight: 600,
+            }}>
+              {chains.length}
+            </span>
           </button>
           <button
             className={`btn btn-sm ${filterTab === 'suggested' ? 'btn-primary' : 'btn-ghost'}`}
             onClick={() => setFilterTab('suggested')}
+            style={{ borderRadius: 'var(--radius-pill)', gap: '6px' }}
           >
-            Suggested ({countSuggested})
+            <span>Suggested</span>
+            <span style={{
+              fontSize: '11px',
+              padding: '1px 6px',
+              borderRadius: 'var(--radius-pill)',
+              background: filterTab === 'suggested' ? 'rgba(0,0,0,0.2)' : 'var(--border)',
+              fontWeight: 600,
+            }}>
+              {countSuggested}
+            </span>
           </button>
           <button
             className={`btn btn-sm ${filterTab === 'review' ? 'btn-primary' : 'btn-ghost'}`}
             onClick={() => setFilterTab('review')}
+            style={{ borderRadius: 'var(--radius-pill)', gap: '6px' }}
           >
-            Needs Review ({countReview})
+            <span>Needs Review</span>
+            <span style={{
+              fontSize: '11px',
+              padding: '1px 6px',
+              borderRadius: 'var(--radius-pill)',
+              background: filterTab === 'review' ? 'rgba(0,0,0,0.2)' : 'var(--border)',
+              fontWeight: 600,
+            }}>
+              {countReview}
+            </span>
           </button>
           <button
             className={`btn btn-sm ${filterTab === 'unexplained' ? 'btn-primary' : 'btn-ghost'}`}
             onClick={() => setFilterTab('unexplained')}
+            style={{ borderRadius: 'var(--radius-pill)', gap: '6px' }}
           >
-            Unexplained Gaps ({countUnexplained})
+            <span>Unexplained Gaps</span>
+            <span style={{
+              fontSize: '11px',
+              padding: '1px 6px',
+              borderRadius: 'var(--radius-pill)',
+              background: filterTab === 'unexplained' ? 'rgba(0,0,0,0.2)' : 'var(--border)',
+              fontWeight: 600,
+            }}>
+              {countUnexplained}
+            </span>
           </button>
           <button
             className={`btn btn-sm ${filterTab === 'confirmed' ? 'btn-primary' : 'btn-ghost'}`}
             onClick={() => setFilterTab('confirmed')}
+            style={{ borderRadius: 'var(--radius-pill)', gap: '6px' }}
           >
-            Confirmed ({countConfirmed})
+            <span>Confirmed</span>
+            <span style={{
+              fontSize: '11px',
+              padding: '1px 6px',
+              borderRadius: 'var(--radius-pill)',
+              background: filterTab === 'confirmed' ? 'rgba(0,0,0,0.2)' : 'var(--border)',
+              fontWeight: 600,
+            }}>
+              {countConfirmed}
+            </span>
           </button>
         </div>
 
-        {/* Search Field */}
+        {/* Linear / Supabase Style Search Input */}
         <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
           <Search size={14} style={{ position: 'absolute', left: '12px', color: 'var(--text-tertiary)' }} />
           <input
@@ -107,8 +157,30 @@ export const LedgerTable: React.FC<LedgerTableProps> = ({
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             className="btn btn-sm"
-            style={{ width: '240px', paddingLeft: '32px', textAlign: 'left', background: 'var(--surface)', fontSize: '12.5px' }}
+            style={{
+              width: '240px',
+              paddingLeft: '32px',
+              paddingRight: '30px',
+              textAlign: 'left',
+              background: 'var(--surface)',
+              fontSize: '12.5px',
+              letterSpacing: 0,
+            }}
           />
+          <kbd style={{
+            position: 'absolute',
+            right: '8px',
+            fontSize: '10.5px',
+            color: 'var(--text-tertiary)',
+            background: 'var(--bg-subtle)',
+            border: '1px solid var(--border)',
+            borderRadius: '4px',
+            padding: '1px 5px',
+            fontFamily: 'var(--font-mono)',
+            userSelect: 'none',
+          }}>
+            /
+          </kbd>
         </div>
       </div>
 
@@ -144,12 +216,13 @@ export const LedgerTable: React.FC<LedgerTableProps> = ({
                       background: isSelected ? 'var(--surface-hover)' : 'transparent',
                       cursor: 'pointer',
                       borderLeft: isSelected ? '4px solid var(--accent)' : '4px solid transparent',
+                      transition: 'all 160ms cubic-bezier(0.16, 1, 0.3, 1)',
                     }}
                   >
                     <td>
                       <StatusBadge status={c.status} />
                     </td>
-                    <td style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '14px' }}>
+                    <td style={{ fontWeight: 550, color: 'var(--text-primary)', fontSize: '14px' }}>
                       {c.invoice?.clientName || c.bankCredit?.narration.slice(0, 26) || 'Unknown Sender'}
                     </td>
                     <td style={{ fontFamily: 'var(--font-mono)', fontSize: '12.5px', color: 'var(--text-secondary)' }}>
