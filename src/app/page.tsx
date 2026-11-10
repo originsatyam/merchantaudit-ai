@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import { Navbar } from '@/components/Navbar';
@@ -47,14 +47,8 @@ export default function HomePage() {
 
     try {
       if (mockMode) {
-        setLoadingStep('Initializing Firecrawl headless crawler...');
-        await new Promise((r) => setTimeout(r, 600));
-        setLoadingStep('Mapping policy endpoints (/terms, /privacy, /refund)...');
-        await new Promise((r) => setTimeout(r, 700));
-        setLoadingStep('Scanning Card Network MCC rules via Gemini Flash...');
-        await new Promise((r) => setTimeout(r, 700));
-        setLoadingStep('Generating compliance scorecard & evidence citations...');
-        await new Promise((r) => setTimeout(r, 500));
+        setLoadingStep('Loading demo fixture data...');
+        await new Promise((r) => setTimeout(r, 200));
 
         const lower = inputUrl.toLowerCase();
         if (lower.includes('keto') || lower.includes('pharma') || lower.includes('burn')) {
@@ -65,7 +59,7 @@ export default function HomePage() {
           setAuditData(validD2C as unknown as AuditResult);
         }
       } else {
-        setLoadingStep('Connecting live Firecrawl agent to crawl domain...');
+        setLoadingStep('Inspecting public merchant website...');
         const response = await fetch('/api/audit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -74,14 +68,14 @@ export default function HomePage() {
 
         if (!response.ok) {
           const err = await response.json();
-          throw new Error(err.error || 'Failed to complete audit');
+          throw new Error(err.error || 'Failed to complete evidence inspection');
         }
 
         const data = await response.json();
         setAuditData(data);
       }
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Audit failed to complete.';
+      const msg = err instanceof Error ? err.message : 'Inspection failed to complete.';
       setErrorMsg(msg);
     } finally {
       setIsLoading(false);
@@ -90,11 +84,10 @@ export default function HomePage() {
   };
 
   const handleHumanDecision = (signoff: HumanAuditSignoff) => {
+    // Decoupled: Record analyst decision without manipulating evidence score or status
     setAuditData((prev) => ({
       ...prev,
       humanDecision: signoff,
-      overallScore: signoff.verdict === 'APPROVED' ? Math.max(prev.overallScore, 85) : signoff.verdict === 'REJECTED' ? Math.min(prev.overallScore, 30) : prev.overallScore,
-      status: signoff.verdict === 'APPROVED' ? 'COMPLIANT' : signoff.verdict === 'REJECTED' ? 'HIGH_RISK' : 'NEEDS_REVIEW'
     }));
   };
 
@@ -128,15 +121,26 @@ export default function HomePage() {
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800/50 mb-2">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-              Enterprise Fintech Compliance • Human-in-the-Loop (HITL) Governed
+              Merchant Onboarding Evidence • Human Analyst Supervised
             </div>
             <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100">
-              Autonomous Merchant Onboarding Auditor
+              Merchant Evidence Copilot
             </h1>
             <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 mt-2 leading-relaxed">
-              Verify e-commerce & SaaS merchant websites in under 30 seconds. Crawls legal disclosures via Firecrawl, evaluates Visa/Mastercard MCC rules via Gemini Flash, and provides a full human verification workflow for compliance risk officers.
+              Human-reviewed website evidence and risk-review assistant for merchant onboarding teams. Inspect public merchant disclosures, identify observable gaps, and document decisions faster.
             </p>
           </div>
+
+          {mockMode && (
+            <div className="p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 rounded-xl text-amber-800 dark:text-amber-300 text-xs flex items-center justify-between gap-3 shadow-xs">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-amber-600 shrink-0" />
+                <span>
+                  <strong className="font-semibold">DEMO MODE ACTIVE:</strong> Viewing pre-calculated demo fixtures (zero API tokens burned). Switch to &quot;Live Crawl&quot; in the top bar to inspect live websites.
+                </span>
+              </div>
+            </div>
+          )}
 
           {/* Audit URL Input Form */}
           <form onSubmit={handleRunAudit} className="flex flex-col sm:flex-row gap-3 pt-2">
@@ -161,12 +165,12 @@ export default function HomePage() {
               {isLoading ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Auditing...</span>
+                  <span>Inspecting...</span>
                 </>
               ) : (
                 <>
                   <Sparkles className="w-4 h-4" />
-                  <span>Run Compliance Audit</span>
+                  <span>{mockMode ? 'Load Demo Fixture' : 'Inspect Merchant Website'}</span>
                 </>
               )}
             </button>

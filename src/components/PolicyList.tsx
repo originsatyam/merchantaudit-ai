@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import { PolicyCheck } from '@/lib/types';
@@ -64,10 +64,10 @@ export const PolicyList: React.FC<PolicyListProps> = ({ policies, onPolicyOverri
         <div>
           <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
             <FileText className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-            Mandatory Policy Verification
+            Observed Consumer Policies & Disclosures
           </h3>
           <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-            Card network compliance (Visa Rule 5.4 / Mastercard Section 3.2.1) • Human Reviewable
+            Key merchant disclosures (Refunds, Terms, Privacy, Delivery) • Human Reviewable
           </p>
         </div>
         <div className="flex items-center gap-2">

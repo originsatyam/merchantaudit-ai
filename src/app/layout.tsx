@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MerchantAudit AI — Autonomous KYB & Merchant Compliance Auditor",
-  description: "AI-powered merchant compliance intelligence for payment gateways, acquiring banks, and risk operations teams.",
+  title: "Merchant Evidence Copilot — Website Evidence & Risk Review Assistant",
+  description: "Human-reviewed website evidence and risk-review assistant for merchant onboarding teams.",
 };
 
 export default function RootLayout({

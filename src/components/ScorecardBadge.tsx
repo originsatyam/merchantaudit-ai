@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import { AuditStatus, HumanAuditSignoff } from '@/lib/types';
@@ -25,36 +25,36 @@ export const ScorecardBadge: React.FC<ScorecardBadgeProps> = ({
     switch (status) {
       case 'COMPLIANT':
         return {
-          label: 'Compliant & Low Risk',
+          label: 'Policies Observed & Low Risk',
           bg: 'bg-emerald-50 dark:bg-emerald-950/20',
           border: 'border-emerald-200 dark:border-emerald-500/30',
           text: 'text-emerald-700 dark:text-emerald-400',
           badgeText: 'text-emerald-800 dark:text-emerald-300',
           badgeBg: 'bg-emerald-100 dark:bg-emerald-500/20',
           icon: ShieldCheck,
-          recommendation: 'Low risk profile. All mandatory consumer policies present and verified under Visa/Mastercard MCC rules.',
+          recommendation: 'Observed consumer disclosures and identity signals match declared merchant profile.',
         };
       case 'NEEDS_REVIEW':
         return {
-          label: 'Requires Compliance Review',
+          label: 'Requires Analyst Verification',
           bg: 'bg-amber-50 dark:bg-amber-950/20',
           border: 'border-amber-200 dark:border-amber-500/30',
           text: 'text-amber-700 dark:text-amber-400',
           badgeText: 'text-amber-800 dark:text-amber-300',
           badgeBg: 'bg-amber-100 dark:bg-amber-500/20',
           icon: AlertTriangle,
-          recommendation: 'Conditional risk. Missing dedicated refund policy or vague cancellation terms requires analyst intervention.',
+          recommendation: 'Potential gaps in observed disclosures or refund terms. Analyst verification recommended before onboarding.',
         };
       case 'HIGH_RISK':
         return {
-          label: 'High Risk / Prohibited',
+          label: 'Observable Risk Indicators Flagged',
           bg: 'bg-rose-50 dark:bg-rose-950/20',
           border: 'border-rose-200 dark:border-rose-500/30',
           text: 'text-rose-700 dark:text-rose-400',
           badgeText: 'text-rose-800 dark:text-rose-300',
           badgeBg: 'bg-rose-100 dark:bg-rose-500/20',
           icon: XCircle,
-          recommendation: 'Critical violation of Card Network rules (GBPP/BRAM) or deceptive marketing detected. Manual review recommended before rejection.',
+          recommendation: 'Observable risk signals or flagged keywords detected during inspection. Review evidence pack below.',
         };
     }
   };
@@ -65,15 +65,15 @@ export const ScorecardBadge: React.FC<ScorecardBadgeProps> = ({
 
   return (
     <div className={`rounded-2xl border ${config.border} ${config.bg} p-6 relative overflow-hidden backdrop-blur-sm transition-all duration-200`}>
-      {/* Official Human Review Stamp if certified */}
+      {/* Human Review Decision Stamp */}
       {isHumanSigned && (
         <div className="mb-4 p-3 rounded-xl bg-white dark:bg-zinc-900 border border-emerald-300 dark:border-emerald-600/40 shadow-sm flex flex-wrap items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-300 font-semibold">
             <Award className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-            <span>HITL Signed-Off: Official {humanDecision.verdict} by {humanDecision.reviewerName}</span>
+            <span>Analyst Review: {humanDecision.verdict} by {humanDecision.reviewerName}</span>
           </div>
           <div className="flex items-center gap-2 font-mono text-[11px] text-zinc-500 dark:text-zinc-400">
-            <span>Ref: {humanDecision.auditHash}</span>
+            <span>Digest: {humanDecision.auditHash}</span>
             <span>•</span>
             <span>{humanDecision.reviewedAt ? humanDecision.reviewedAt.split('T')[0] : ''}</span>
           </div>
@@ -90,11 +90,11 @@ export const ScorecardBadge: React.FC<ScorecardBadgeProps> = ({
             </span>
             <span className="text-xs text-zinc-500 dark:text-zinc-400 flex items-center gap-1 font-mono">
               <Calendar className="w-3 h-3" />
-              {timestamp ? timestamp.split('T')[0] : '2026-11-09'}
+              {timestamp ? timestamp.split('T')[0] : '2026-11-10'}
             </span>
             <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-zinc-200/80 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 flex items-center gap-1">
               <UserCheck className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
-              HITL Governed
+              Human Supervised
             </span>
           </div>
 
@@ -119,8 +119,8 @@ export const ScorecardBadge: React.FC<ScorecardBadgeProps> = ({
         {/* Right: Score Metric Circle */}
         <div className="flex items-center gap-5 self-start md:self-auto bg-white/90 dark:bg-zinc-950/60 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800/80 shadow-sm">
           <div className="text-right">
-            <div className="text-xs uppercase tracking-wider text-zinc-500 font-semibold">Compliance Index</div>
-            <div className="text-xs text-zinc-500 dark:text-zinc-400 font-mono mt-0.5">MCC Standard 4.1</div>
+            <div className="text-xs uppercase tracking-wider text-zinc-500 font-semibold">Evidence Index</div>
+            <div className="text-xs text-zinc-500 dark:text-zinc-400 font-mono mt-0.5">Automated Scan</div>
           </div>
           <div className="relative flex items-center justify-center">
             <div className="w-16 h-16 rounded-full border-4 border-zinc-200 dark:border-zinc-800 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900">

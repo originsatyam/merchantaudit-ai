@@ -10,15 +10,15 @@ import missingRefund from '../data/fixtures/missing-refund-policy.json';
 export async function runMerchantAudit(req: AuditRequest): Promise<AuditResult> {
   const normalizedUrl = req.url.toLowerCase().trim();
 
-  // 1. Check if mock requested or matches known sample stores
-  if (req.forceMock || normalizedUrl.includes('auraglow') || normalizedUrl.includes('d2c')) {
+  // 1. Explicit mock request ONLY (Never intercept live audits by keyword)
+  if (req.forceMock) {
+    if (normalizedUrl.includes('keto') || normalizedUrl.includes('burn') || normalizedUrl.includes('pharma')) {
+      return highRiskPharma as unknown as AuditResult;
+    }
+    if (normalizedUrl.includes('devsync') || normalizedUrl.includes('analytics') || normalizedUrl.includes('missing-refund')) {
+      return missingRefund as unknown as AuditResult;
+    }
     return validD2C as unknown as AuditResult;
-  }
-  if (normalizedUrl.includes('keto') || normalizedUrl.includes('burn') || normalizedUrl.includes('pharma')) {
-    return highRiskPharma as unknown as AuditResult;
-  }
-  if (normalizedUrl.includes('devsync') || normalizedUrl.includes('analytics') || normalizedUrl.includes('missing-refund')) {
-    return missingRefund as unknown as AuditResult;
   }
 
   // 2. Live Crawl via Firecrawl
@@ -50,17 +50,17 @@ export async function runMerchantAudit(req: AuditRequest): Promise<AuditResult> 
     auditTimestamp: new Date().toISOString(),
     overallScore: aiResult.overallScore ?? 75,
     status: aiResult.status ?? 'NEEDS_REVIEW',
-    executiveSummary: aiResult.executiveSummary || 'Automated compliance scan completed.',
+    executiveSummary: aiResult.executiveSummary || 'Website evidence inspection completed. Review analyst pack below.',
     businessIdentity: {
       legalEntityName: aiResult.businessIdentity?.legalEntityName || req.legalEntityName || 'Unspecified',
       claimedName: aiResult.businessIdentity?.claimedName || domain,
       entityMatch: aiResult.businessIdentity?.entityMatch ?? 'UNCERTAIN',
-      taxId: taxIds[0] || aiResult.businessIdentity?.taxId || req.taxId || 'Not detected',
+      taxId: taxIds[0] || aiResult.businessIdentity?.taxId || req.taxId || 'Not detected in inspected pages',
       addressFound: Boolean(aiResult.businessIdentity?.addressFound),
-      physicalAddress: aiResult.businessIdentity?.physicalAddress || 'Not detected in site footer or contact page',
-      supportEmail: emails[0] || aiResult.businessIdentity?.supportEmail || 'Not detected',
-      supportPhone: phones[0] || aiResult.businessIdentity?.supportPhone || 'Not detected',
-      evidenceSnippet: aiResult.businessIdentity?.evidenceSnippet || 'Extracted from home and footer pages.',
+      physicalAddress: aiResult.businessIdentity?.physicalAddress || 'Not observed in inspected page footer or contact sections',
+      supportEmail: emails[0] || aiResult.businessIdentity?.supportEmail || 'Not observed',
+      supportPhone: phones[0] || aiResult.businessIdentity?.supportPhone || 'Not observed',
+      evidenceSnippet: aiResult.businessIdentity?.evidenceSnippet || 'Extracted from inspected page content.',
     },
     policies: {
       termsOfService: aiResult.policies?.termsOfService || {
@@ -68,7 +68,7 @@ export async function runMerchantAudit(req: AuditRequest): Promise<AuditResult> 
         name: 'Terms of Service',
         required: true,
         found: false,
-        summary: 'Not detected',
+        summary: 'Not observed during this inspection',
         confidenceScore: 50,
       },
       privacyPolicy: aiResult.policies?.privacyPolicy || {
@@ -76,7 +76,7 @@ export async function runMerchantAudit(req: AuditRequest): Promise<AuditResult> 
         name: 'Privacy Policy',
         required: true,
         found: false,
-        summary: 'Not detected',
+        summary: 'Not observed during this inspection',
         confidenceScore: 50,
       },
       refundPolicy: aiResult.policies?.refundPolicy || {
@@ -84,7 +84,7 @@ export async function runMerchantAudit(req: AuditRequest): Promise<AuditResult> 
         name: 'Refund & Cancellation Policy',
         required: true,
         found: false,
-        summary: 'Not detected',
+        summary: 'Not observed during this inspection',
         confidenceScore: 50,
       },
       shippingOrDeliveryPolicy: aiResult.policies?.shippingOrDeliveryPolicy || {
@@ -92,7 +92,7 @@ export async function runMerchantAudit(req: AuditRequest): Promise<AuditResult> 
         name: 'Shipping & Delivery Policy',
         required: false,
         found: false,
-        summary: 'Not detected',
+        summary: 'Not observed during this inspection',
         confidenceScore: 50,
       },
       contactUs: aiResult.policies?.contactUs || {
@@ -100,7 +100,7 @@ export async function runMerchantAudit(req: AuditRequest): Promise<AuditResult> 
         name: 'Contact & Customer Support',
         required: true,
         found: phones.length > 0 || emails.length > 0,
-        summary: emails.length > 0 ? `Support email: ${emails[0]}` : 'Contact details not found',
+        summary: emails.length > 0 ? `Support email: ${emails[0]}` : 'Contact details not observed',
         confidenceScore: 70,
       },
     },
@@ -110,7 +110,7 @@ export async function runMerchantAudit(req: AuditRequest): Promise<AuditResult> 
         category: 'Deterministic Keyword Match',
         severity: 'CRITICAL' as const,
         flaggedKeywords: detectedProhibited,
-        explanation: 'Regex scan found potential prohibited terms directly in the page body.',
+        explanation: 'Regex scan found potential prohibited terms directly in the inspected page body.',
         evidenceSnippet: `Matched keywords: ${detectedProhibited.join(', ')}`,
       }] : [])
     ],

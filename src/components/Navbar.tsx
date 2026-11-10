@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useEffect } from 'react';
 import { ShieldCheck, Sparkles, Terminal, Sun, Moon } from 'lucide-react';
@@ -39,10 +39,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onSelectSample, mockMode, setMoc
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-bold text-zinc-900 dark:text-zinc-100 text-base tracking-tight">MerchantAudit</span>
-              <span className="text-[10px] font-semibold tracking-wider px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">AI + HITL</span>
+              <span className="font-bold text-zinc-900 dark:text-zinc-100 text-base tracking-tight">Merchant Evidence Copilot</span>
+              <span className="text-[10px] font-semibold tracking-wider px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">Decision Support</span>
             </div>
-            <p className="text-xs text-zinc-500 hidden sm:block">Institutional KYB & Human-in-the-Loop Risk Review</p>
+            <p className="text-xs text-zinc-500 hidden sm:block">Website Evidence & Risk Review Assistant</p>
           </div>
         </div>
 

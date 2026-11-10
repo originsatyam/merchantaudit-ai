@@ -1,22 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { runMerchantAudit } from '@/lib/audit-engine';
+import { validateMerchantUrl } from '@/lib/security';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    if (!body.url || typeof body.url !== 'string') {
+    const validation = validateMerchantUrl(body.url);
+    if (!validation.valid || !validation.normalizedUrl) {
       return NextResponse.json(
-        { error: 'A valid merchant website URL is required.' },
+        { error: validation.error || 'A valid merchant website URL is required.' },
         { status: 400 }
       );
     }
 
     const audit = await runMerchantAudit({
-      url: body.url,
-      legalEntityName: body.legalEntityName,
-      taxId: body.taxId,
-      forceMock: body.forceMock,
+      url: validation.normalizedUrl,
+      legalEntityName: typeof body.legalEntityName === 'string' ? body.legalEntityName : undefined,
+      taxId: typeof body.taxId === 'string' ? body.taxId : undefined,
+      forceMock: Boolean(body.forceMock),
     });
 
     return NextResponse.json(audit);
