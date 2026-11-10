@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { ScorecardBadge } from '@/components/ScorecardBadge';
 import { PolicyList } from '@/components/PolicyList';
@@ -8,12 +8,13 @@ import { BusinessIdentityCard } from '@/components/BusinessIdentityCard';
 import { ProhibitedRiskCard } from '@/components/ProhibitedRiskCard';
 import { HumanDecisionBar } from '@/components/HumanDecisionBar';
 import { AuditResult, HumanAuditSignoff } from '@/lib/types';
+import { loadReviewPack, saveReviewPack, clearReviewPack, ReviewHistoryEntry } from '@/lib/storage';
 
 import validD2C from '@/data/fixtures/valid-d2c-store.json';
 import highRiskPharma from '@/data/fixtures/high-risk-pharma.json';
 import missingRefund from '@/data/fixtures/missing-refund-policy.json';
 
-import { Search, Loader2, Sparkles, Shield, AlertTriangle, FileCode2, Layers, CheckCircle2, UserCheck, ShieldCheck } from 'lucide-react';
+import { Search, Loader2, Sparkles, Shield, AlertTriangle, FileCode2, Layers, CheckCircle2, UserCheck, ShieldCheck, History } from 'lucide-react';
 
 export default function HomePage() {
   const [inputUrl, setInputUrl] = useState('https://auraglow-organics.com');
@@ -23,6 +24,47 @@ export default function HomePage() {
   const [activeTab, setActiveTab] = useState<'scorecard' | 'identity' | 'prohibited' | 'pages'>('scorecard');
   const [mockMode, setMockMode] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [decisionHistory, setDecisionHistory] = useState<ReviewHistoryEntry[]>([]);
+  const [restoredNotice, setRestoredNotice] = useState<string | null>(null);
+
+  // Restore saved analyst review pack across page refreshes or domain switches
+  useEffect(() => {
+    if (!auditData?.domain) return;
+    const saved = loadReviewPack(auditData.domain);
+    if (saved) {
+      setDecisionHistory(saved.history || []);
+      if (saved.decision && saved.decision.verdict !== 'PENDING') {
+        setRestoredNotice(`Restored prior review by ${saved.decision.reviewerName || 'analyst'} (${saved.decision.verdict})`);
+        setAuditData(prev => {
+          const updated = { ...prev, humanDecision: saved.decision };
+          if (saved.policyOverrides) {
+            const updatedPolicies = { ...updated.policies };
+            for (const [policyId, override] of Object.entries(saved.policyOverrides)) {
+              for (const key of Object.keys(updatedPolicies) as (keyof typeof updatedPolicies)[]) {
+                if (updatedPolicies[key]?.id === policyId) {
+                  updatedPolicies[key] = {
+                    ...updatedPolicies[key],
+                    humanOverride: {
+                      verified: override.verified,
+                      reviewerNote: override.note,
+                      verifiedAt: override.verifiedAt,
+                    }
+                  };
+                }
+              }
+            }
+            updated.policies = updatedPolicies;
+          }
+          return updated;
+        });
+      } else {
+        setRestoredNotice(null);
+      }
+    } else {
+      setDecisionHistory([]);
+      setRestoredNotice(null);
+    }
+  }, [auditData.domain]);
 
   const handleSelectSample = (type: 'valid' | 'pharma' | 'missing') => {
     setErrorMsg(null);
@@ -84,11 +126,34 @@ export default function HomePage() {
   };
 
   const handleHumanDecision = (signoff: HumanAuditSignoff) => {
-    // Decoupled: Record analyst decision without manipulating evidence score or status
-    setAuditData((prev) => ({
-      ...prev,
-      humanDecision: signoff,
-    }));
+    setAuditData((prev) => {
+      const updated = {
+        ...prev,
+        humanDecision: signoff,
+      };
+
+      const overrides: Record<string, { verified: boolean; note?: string; verifiedAt?: string }> = {};
+      for (const p of Object.values(updated.policies)) {
+        if (p?.humanOverride) {
+          overrides[p.id] = {
+            verified: p.humanOverride.verified,
+            note: p.humanOverride.reviewerNote,
+            verifiedAt: p.humanOverride.verifiedAt,
+          };
+        }
+      }
+
+      const saved = saveReviewPack({
+        domain: updated.domain,
+        merchantUrl: updated.merchantUrl,
+        decision: signoff,
+        policyOverrides: overrides,
+      });
+
+      setDecisionHistory(saved.history || []);
+      setRestoredNotice(`Review decision saved locally for ${updated.domain}`);
+      return updated;
+    });
   };
 
   const handlePolicyOverride = (policyId: string, verified: boolean, note: string) => {
@@ -106,8 +171,46 @@ export default function HomePage() {
           };
         }
       }
+
+      const overrides: Record<string, { verified: boolean; note?: string; verifiedAt?: string }> = {};
+      for (const p of Object.values(updatedPolicies)) {
+        if (p?.humanOverride) {
+          overrides[p.id] = {
+            verified: p.humanOverride.verified,
+            note: p.humanOverride.reviewerNote,
+            verifiedAt: p.humanOverride.verifiedAt,
+          };
+        }
+      }
+
+      saveReviewPack({
+        domain: prev.domain,
+        merchantUrl: prev.merchantUrl,
+        decision: prev.humanDecision,
+        policyOverrides: overrides,
+      });
+
       return { ...prev, policies: updatedPolicies };
     });
+  };
+
+  const handleClearReview = () => {
+    clearReviewPack(auditData.domain);
+    setAuditData((prev) => {
+      const resetPolicies = { ...prev.policies };
+      for (const key of Object.keys(resetPolicies) as (keyof typeof resetPolicies)[]) {
+        if (resetPolicies[key]?.humanOverride) {
+          delete resetPolicies[key].humanOverride;
+        }
+      }
+      return {
+        ...prev,
+        humanDecision: { verdict: 'PENDING' },
+        policies: resetPolicies,
+      };
+    });
+    setDecisionHistory([]);
+    setRestoredNotice(null);
   };
 
   return (
@@ -224,6 +327,23 @@ export default function HomePage() {
         {/* Audit Results Container */}
         {auditData && (
           <section className="space-y-6">
+            {restoredNotice && (
+              <div className="p-3 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-800/60 rounded-xl text-emerald-800 dark:text-emerald-300 text-xs flex items-center justify-between gap-3 shadow-xs">
+                <div className="flex items-center gap-2">
+                  <History className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>
+                    <strong className="font-semibold">LOCAL AUDIT VAULT:</strong> {restoredNotice}
+                  </span>
+                </div>
+                <button
+                  onClick={handleClearReview}
+                  className="text-[11px] underline text-emerald-700 dark:text-emerald-400 hover:text-emerald-900"
+                >
+                  Reset Review
+                </button>
+              </div>
+            )}
+
             {/* Top Scorecard Badge */}
             <ScorecardBadge
               score={auditData.overallScore}
@@ -374,6 +494,8 @@ export default function HomePage() {
               merchantDomain={auditData.domain}
               onDecision={handleHumanDecision}
               currentDecision={auditData.humanDecision}
+              decisionHistory={decisionHistory}
+              onClearReview={handleClearReview}
             />
           </section>
         )}

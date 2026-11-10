@@ -47,8 +47,10 @@ export interface ProhibitedRiskItem {
   sourceUrl?: string;
 }
 
+export type ReviewVerdict = 'APPROVED' | 'REJECTED' | 'REQUEST_INFO' | 'ESCALATED' | 'PENDING';
+
 export interface HumanAuditSignoff {
-  verdict: 'APPROVED' | 'REJECTED' | 'REQUEST_INFO' | 'PENDING';
+  verdict: ReviewVerdict;
   reviewerName?: string;
   reviewerId?: string;
   rationale?: string;

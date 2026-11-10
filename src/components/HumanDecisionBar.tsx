@@ -1,13 +1,16 @@
 'use client';
 
 import React, { useState } from 'react';
-import { HumanAuditSignoff } from '@/lib/types';
-import { Check, X, HelpCircle, Printer, UserCheck, Shield } from 'lucide-react';
+import { HumanAuditSignoff, ReviewVerdict } from '@/lib/types';
+import { ReviewHistoryEntry } from '@/lib/storage';
+import { Check, X, HelpCircle, Printer, UserCheck, Shield, AlertOctagon, History, RotateCcw } from 'lucide-react';
 
 interface HumanDecisionBarProps {
   merchantDomain: string;
   onDecision: (signoff: HumanAuditSignoff) => void;
   currentDecision?: HumanAuditSignoff;
+  decisionHistory?: ReviewHistoryEntry[];
+  onClearReview?: () => void;
 }
 
 // Simple deterministic client digest
@@ -29,11 +32,14 @@ export const HumanDecisionBar: React.FC<HumanDecisionBarProps> = ({
   merchantDomain,
   onDecision,
   currentDecision,
+  decisionHistory = [],
+  onClearReview,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedVerdict, setSelectedVerdict] = useState<'APPROVED' | 'REJECTED' | 'REQUEST_INFO'>('APPROVED');
-  const [reviewerName, setReviewerName] = useState('');
-  const [reviewerId, setReviewerId] = useState('');
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [selectedVerdict, setSelectedVerdict] = useState<ReviewVerdict>('APPROVED');
+  const [reviewerName, setReviewerName] = useState(currentDecision?.reviewerName || '');
+  const [reviewerId, setReviewerId] = useState(currentDecision?.reviewerId || '');
   const [rationale, setRationale] = useState('');
   const [checklist, setChecklist] = useState({
     policiesReviewed: false,
@@ -43,7 +49,7 @@ export const HumanDecisionBar: React.FC<HumanDecisionBarProps> = ({
 
   const activeVerdict = currentDecision?.verdict || 'PENDING';
 
-  const handleOpenSignoff = (verdict: 'APPROVED' | 'REJECTED' | 'REQUEST_INFO') => {
+  const handleOpenSignoff = (verdict: ReviewVerdict) => {
     setSelectedVerdict(verdict);
     setIsModalOpen(true);
   };
@@ -74,6 +80,21 @@ export const HumanDecisionBar: React.FC<HumanDecisionBarProps> = ({
     window.print();
   };
 
+  const getVerdictStyle = (v: ReviewVerdict) => {
+    switch (v) {
+      case 'APPROVED':
+        return 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-800 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-500/30';
+      case 'REJECTED':
+        return 'bg-rose-100 dark:bg-rose-500/20 text-rose-800 dark:text-rose-400 border border-rose-300 dark:border-rose-500/30';
+      case 'REQUEST_INFO':
+        return 'bg-amber-100 dark:bg-amber-500/20 text-amber-800 dark:text-amber-400 border border-amber-300 dark:border-amber-500/30';
+      case 'ESCALATED':
+        return 'bg-purple-100 dark:bg-purple-500/20 text-purple-800 dark:text-purple-400 border border-purple-300 dark:border-purple-500/30';
+      default:
+        return 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400';
+    }
+  };
+
   return (
     <>
       <div className="bg-white/95 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 shadow-xl dark:shadow-2xl flex flex-col md:flex-row items-center justify-between gap-4 sticky bottom-4 z-40 backdrop-blur-md transition-colors duration-200">
@@ -86,76 +107,138 @@ export const HumanDecisionBar: React.FC<HumanDecisionBarProps> = ({
             <div className="text-xs uppercase tracking-wider text-zinc-500 font-semibold flex items-center gap-1.5">
               <span>Analyst Review Workflow</span>
               <span className="text-[10px] px-1.5 py-0.2 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 font-mono">
-                Human Review
+                Durable Storage
               </span>
             </div>
             <div className="text-sm font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2 mt-0.5">
               Analyst Status:
-              <span
-                className={`font-mono text-xs px-2.5 py-0.5 rounded-full font-semibold ${
-                  activeVerdict === 'APPROVED'
-                    ? 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-800 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-500/30'
-                    : activeVerdict === 'REJECTED'
-                    ? 'bg-rose-100 dark:bg-rose-500/20 text-rose-800 dark:text-rose-400 border border-rose-300 dark:border-rose-500/30'
-                    : activeVerdict === 'REQUEST_INFO'
-                    ? 'bg-amber-100 dark:bg-amber-500/20 text-amber-800 dark:text-amber-400 border border-amber-300 dark:border-amber-500/30'
-                    : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
-                }`}
-              >
+              <span className={`font-mono text-xs px-2.5 py-0.5 rounded-full font-semibold ${getVerdictStyle(activeVerdict)}`}>
                 {activeVerdict}
               </span>
+              {decisionHistory.length > 0 && (
+                <button
+                  onClick={() => setIsHistoryOpen(!isHistoryOpen)}
+                  className="text-xs text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 flex items-center gap-1 underline ml-1"
+                >
+                  <History className="w-3 h-3" />
+                  <span>({decisionHistory.length} prior logs)</span>
+                </button>
+              )}
             </div>
           </div>
         </div>
 
         {/* Right: Action Buttons */}
-        <div className="flex flex-wrap items-center gap-2.5 w-full md:w-auto justify-end">
+        <div className="flex flex-wrap items-center gap-2 w-full md:w-auto justify-end">
           <button
             onClick={handlePrint}
-            className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-200 flex items-center gap-1.5 transition border border-zinc-200 dark:border-zinc-700 shadow-xs"
+            className="px-3 py-2 rounded-xl text-xs font-semibold bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-200 flex items-center gap-1.5 transition border border-zinc-200 dark:border-zinc-700 shadow-xs"
             title="Print or export analyst review pack (PDF)"
           >
             <Printer className="w-3.5 h-3.5" />
-            Export Review Pack (PDF)
+            Export Pack (PDF)
           </button>
 
           <button
             onClick={() => handleOpenSignoff('REQUEST_INFO')}
-            className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition border shadow-xs ${
+            className={`px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition border shadow-xs ${
               activeVerdict === 'REQUEST_INFO'
                 ? 'bg-amber-500 text-black border-amber-400 font-bold'
                 : 'bg-amber-50 dark:bg-amber-500/10 hover:bg-amber-100 dark:hover:bg-amber-500/20 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-500/30'
             }`}
           >
             <HelpCircle className="w-3.5 h-3.5" />
-            Request Info (Analyst)
+            Request Info
+          </button>
+
+          <button
+            onClick={() => handleOpenSignoff('ESCALATED')}
+            className={`px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition border shadow-xs ${
+              activeVerdict === 'ESCALATED'
+                ? 'bg-purple-600 text-white border-purple-500 font-bold'
+                : 'bg-purple-50 dark:bg-purple-500/10 hover:bg-purple-100 dark:hover:bg-purple-500/20 text-purple-800 dark:text-purple-300 border-purple-200 dark:border-purple-500/30'
+            }`}
+          >
+            <AlertOctagon className="w-3.5 h-3.5" />
+            Escalate
           </button>
 
           <button
             onClick={() => handleOpenSignoff('REJECTED')}
-            className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition border shadow-xs ${
+            className={`px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition border shadow-xs ${
               activeVerdict === 'REJECTED'
                 ? 'bg-rose-600 text-white border-rose-500 font-bold'
                 : 'bg-rose-50 dark:bg-rose-500/10 hover:bg-rose-100 dark:hover:bg-rose-500/20 text-rose-800 dark:text-rose-400 border-rose-200 dark:border-rose-500/30'
             }`}
           >
             <X className="w-3.5 h-3.5" />
-            Reject (Analyst)
+            Reject
           </button>
 
           <button
             onClick={() => handleOpenSignoff('APPROVED')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition shadow-md shadow-emerald-600/20 border ${
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition shadow-md shadow-emerald-600/20 border ${
               activeVerdict === 'APPROVED'
                 ? 'bg-emerald-600 text-white border-emerald-500 ring-2 ring-emerald-500/30'
                 : 'bg-emerald-600 hover:bg-emerald-500 text-white border-emerald-500'
             }`}
           >
             <Check className="w-4 h-4" />
-            Approve (Analyst)
+            Approve
           </button>
+
+          {activeVerdict !== 'PENDING' && onClearReview && (
+            <button
+              onClick={onClearReview}
+              className="p-2 rounded-xl text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 border border-transparent hover:border-zinc-200 dark:hover:border-zinc-700 transition"
+              title="Reset analyst review for this domain"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
       </div>
+
+      {/* Decision History Modal / Slide-out */}
+      {isHistoryOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+          <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 text-zinc-900 dark:text-zinc-100">
+            <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 pb-3">
+              <div className="flex items-center gap-2">
+                <History className="w-5 h-5 text-emerald-600" />
+                <h3 className="text-base font-bold">Decision Audit History</h3>
+              </div>
+              <button
+                onClick={() => setIsHistoryOpen(false)}
+                className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 p-1"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-3 max-h-80 overflow-y-auto">
+              {decisionHistory.map((item, idx) => (
+                <div key={idx} className="p-3 bg-zinc-50 dark:bg-zinc-950/60 rounded-xl border border-zinc-200 dark:border-zinc-800 text-xs space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className={`px-2 py-0.5 rounded font-mono font-bold text-[10px] ${getVerdictStyle(item.verdict)}`}>
+                      {item.verdict}
+                    </span>
+                    <span className="text-[11px] text-zinc-500 font-mono">
+                      {item.reviewedAt ? item.reviewedAt.split('T')[0] : ''}
+                    </span>
+                  </div>
+                  <div className="text-zinc-700 dark:text-zinc-300 font-medium">
+                    {item.reviewerName} ({item.reviewerId})
+                  </div>
+                  {item.rationale && (
+                    <p className="text-zinc-600 dark:text-zinc-400 mt-1 italic">&quot;{item.rationale}&quot;</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Reviewer Decision Modal */}
       {isModalOpen && (
@@ -167,7 +250,7 @@ export const HumanDecisionBar: React.FC<HumanDecisionBarProps> = ({
                   <Shield className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold">Record Analyst Review Decision</h3>
+                  <h3 className="text-base font-bold">Record Review Decision</h3>
                   <p className="text-xs text-zinc-500 font-mono">Merchant: {merchantDomain}</p>
                 </div>
               </div>
@@ -276,6 +359,8 @@ export const HumanDecisionBar: React.FC<HumanDecisionBarProps> = ({
                       ? 'bg-emerald-600 hover:bg-emerald-500'
                       : selectedVerdict === 'REJECTED'
                       ? 'bg-rose-600 hover:bg-rose-500'
+                      : selectedVerdict === 'ESCALATED'
+                      ? 'bg-purple-600 hover:bg-purple-500'
                       : 'bg-amber-600 hover:bg-amber-500'
                   }`}
                 >
